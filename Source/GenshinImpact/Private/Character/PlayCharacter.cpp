@@ -7,17 +7,15 @@
 #include "PlayerComponent/HealthComponent.h"
 #include "Projectile/BallProjectile.h"
 #include"PlayerComponent/ProjectileComponent.h"
-
+#include "PlayerController/SumPlayerController.h"
+#include "PlayerComponent/BlueComponent.h"
 APlayCharacter::APlayCharacter()
 {
-
 	IsCastingSpell = false;
 	IsNormalAttack = false;
 	IsAnimForbidden = false;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
-	HealthComponent->MaxHealth = 100.0f;
-	HealthComponent->CurrentHealth = HealthComponent->MaxHealth;
+	BlueComponent = CreateDefaultSubobject<UBlueComponent>(TEXT("BlueComponent"));
 	NormalAttackProjectileComponent = CreateDefaultSubobject<UProjectileComponent>(TEXT("NormalAttackProjectileComponent"));
 	NormalAttackProjectileComponent->SetupAttachment(RootComponent);
 	CastSpellProjectileComponent = CreateDefaultSubobject<UProjectileComponent>(TEXT("CastSpellProjectileComponent"));
@@ -28,6 +26,14 @@ APlayCharacter::APlayCharacter()
 void APlayCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+	RecoverBlueByTick();
+	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->UpdateHud();
+	}
+
+	
 }
 
 
@@ -35,7 +41,6 @@ void APlayCharacter::BeginPlay()
 {
     Super::BeginPlay();
     //输入初始化
-
 
 }
 
@@ -120,11 +125,19 @@ void APlayCharacter::SpawnNormalAttackProjectile()
 
 void APlayCharacter::SpawnCastSpell()
 {
+	if (!BlueComponent->ReduceBlue(CastSpellBlueCost))
+	{
+		return;
+	}
 	FVector InitialLocation = CastSpellProjectileComponent->GetComponentLocation();
 	FVector SpawnLocation = InitialLocation + GetActorForwardVector() ;
 	FRotator SpawnRotation = GetActorRotation();
-
 	TSubclassOf<ABallProjectile> ProjectileClass = CastSpellProjectileComponent->ProjectileClass;
 	ABallProjectile* Projectile = GetWorld()->SpawnActor<ABallProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-	
+}
+
+void APlayCharacter::RecoverBlueByTick()
+{
+	if (BlueComponent)
+		BlueComponent->RecoverBlueByTick();
 }

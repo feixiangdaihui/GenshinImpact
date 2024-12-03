@@ -12,7 +12,9 @@ ABallProjectile::ABallProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
 	SetRootComponent(CollisionComponent);
-
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
+	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	CollisionComponent->InitSphereRadius(15.0f);
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 	CollisionComponent->OnComponentHit.AddDynamic(this, &ABallProjectile::OnHit);
@@ -20,8 +22,6 @@ ABallProjectile::ABallProjectile()
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	MaxDistance = 10000.0f;
 	InitialLocation = GetActorLocation();
-	//打印球的位置
-	UE_LOG(LogTemp, Warning, TEXT("Projectile Location: %s"), *GetActorLocation().ToString());
 }
 
 void ABallProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
@@ -45,7 +45,6 @@ void ABallProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (FVector::Dist(InitialLocation, GetActorLocation()) > MaxDistance)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Projectile Distance Limit"));
 		Destroy();
 	}
 

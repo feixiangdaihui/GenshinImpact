@@ -9,6 +9,7 @@
 
 class UHealthComponent;
 class UProjectileComponent;
+class UBlueComponent;
 /**
  *
  */
@@ -60,6 +61,13 @@ public:
     void SpawnCastSpell();
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UProjectileComponent> CastSpellProjectileComponent;
+	//蓝量
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBlueComponent> BlueComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue")
+	float CastSpellBlueCost;
+    void RecoverBlueByTick();
+
 
 
 };
