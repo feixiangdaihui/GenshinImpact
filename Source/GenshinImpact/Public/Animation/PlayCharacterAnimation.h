@@ -31,10 +31,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float ZVelocity;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	bool IsNormalAttack;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	bool IsCastSpell;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")

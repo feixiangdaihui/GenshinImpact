@@ -11,26 +11,21 @@ void UPlayCharacterAnimation::NativeInitializeAnimation()
 	Speed = 0.0f;
 	IsInAir = false;
 	ZVelocity = 0.0f;
-	IsCastSpell = false;
 	PlayCharacter = Cast<APlayCharacter>(GetOwningActor());
 	if (PlayCharacter)
 	{
 		CharacterMovementComponent = PlayCharacter->GetCharacterMovement();
 	}
-	
-
 }
 
 void UPlayCharacterAnimation::NativeUpdateAnimation(float  DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
-	if (PlayCharacter&& CharacterMovementComponent)
+	if (PlayCharacter && CharacterMovementComponent)
 	{
 		Speed = CharacterMovementComponent->Velocity.Size();
 		IsInAir = CharacterMovementComponent->IsFalling();
 		ZVelocity = CharacterMovementComponent->Velocity.Z;
-		IsNormalAttack = PlayCharacter->IsNormalAttack;
-		IsCastSpell = PlayCharacter->IsCastingSpell;
 	}
 }
 
