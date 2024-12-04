@@ -45,7 +45,7 @@ public:
     //血量
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
-	virtual void TakeDamageByValue_Implementation(float DamageAmount) override;
+	virtual void TakeDamageByValue_Implementation() override;
 	virtual void Die_Implementation() override;
 
 	//蓝量

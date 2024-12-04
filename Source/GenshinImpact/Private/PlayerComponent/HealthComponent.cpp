@@ -21,10 +21,18 @@ void UHealthComponent::DamageHealthByValue(float DamageValue)
 {
 	CurrentHealth -= DamageValue;
 	RemainHealthRate = CurrentHealth / MaxHealth;
+	if (GetOwner()->GetClass()->ImplementsInterface(UHealthInterface::StaticClass()))
+	{
+		IHealthInterface::Execute_TakeDamageByValue(GetOwner());
+	} 
 	if (CurrentHealth <= 0)
 	{
-		CurrentHealth = 0;
-		RemainHealthRate = 0;
+		CurrentHealth = 0.0f;
+		RemainHealthRate = 0.0f;
+		if (GetOwner()->GetClass()->ImplementsInterface(UHealthInterface::StaticClass()))
+		{
+			IHealthInterface::Execute_Die(GetOwner());
+		}
 	}
 }
 
@@ -34,8 +42,8 @@ void UHealthComponent::DamageHealthByRate(float DamageRate)
 	RemainHealthRate = CurrentHealth / MaxHealth;
 	if (CurrentHealth <= 0)
 	{
-		CurrentHealth = 0;
-		RemainHealthRate = 0;
+		CurrentHealth = 0.0f;
+		RemainHealthRate = 0.0f;
 	}
 }
 
@@ -43,9 +51,8 @@ void UHealthComponent::DamageHealthByRate(float DamageRate)
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
-	
+
 }
 
 

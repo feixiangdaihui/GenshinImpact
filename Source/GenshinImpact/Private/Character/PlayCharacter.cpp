@@ -48,17 +48,15 @@ void APlayCharacter::Move(const FInputActionValue& Value)
 	}
 	Super::Move(Value);
 }
-void APlayCharacter::TakeDamageByValue_Implementation(float DamageAmount)
+void APlayCharacter::TakeDamageByValue_Implementation()
 {
-	HealthComponent->DamageHealthByValue(DamageAmount);
-	if (HealthComponent->CurrentHealth <= 0)
-	{
-		Die();
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Character TakeDamageByValue"));
 }
 void APlayCharacter::Die_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Character Die"));
+	//退出游戏
+	
 }
 void APlayCharacter::RecoverBlueByTick()
 {
