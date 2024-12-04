@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerComponent/HealthComponent.h"
+#include "PlayerComponent/AttackPowerComponent.h"
 #include "PlayerController/SumPlayerController.h"
 #include "Character/PlayCharacter.h"
 #include "PlayerComponent/EquipmentBarComponent.h"
 
 // Sets default values for this component's properties
-UHealthComponent::UHealthComponent()
+UAttackPowerComponent::UAttackPowerComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -17,30 +17,8 @@ UHealthComponent::UHealthComponent()
 }
 
 
-void UHealthComponent::DamageHealthByValue(float DamageValue)
-{
-	CurrentHealth -= DamageValue;
-	RemainHealthRate = CurrentHealth / MaxHealth;
-	if (CurrentHealth <= 0)
-	{
-		CurrentHealth = 0;
-		RemainHealthRate = 0;
-	}
-}
-
-void UHealthComponent::DamageHealthByRate(float DamageRate)
-{
-	CurrentHealth -= MaxHealth * DamageRate;
-	RemainHealthRate = CurrentHealth / MaxHealth;
-	if (CurrentHealth <= 0)
-	{
-		CurrentHealth = 0;
-		RemainHealthRate = 0;
-	}
-}
-
 // Called when the game starts
-void UHealthComponent::BeginPlay()
+void UAttackPowerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -50,19 +28,14 @@ void UHealthComponent::BeginPlay()
 
 
 // Called every frame
-void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UAttackPowerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
 }
 
-void UHealthComponent::SetMaxHealth(float NewMaxHealth)
-{
-	MaxHealth = NewMaxHealth;
-}
-
-void UHealthComponent::UpdateMaxHealth()
+void UAttackPowerComponent::UpdateAttackPower()
 {
 	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController)
@@ -70,20 +43,16 @@ void UHealthComponent::UpdateMaxHealth()
 		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
 		if (PlayerCharacter)
 		{
-			MaxHealth = BaseHealth;
+			SumAttackPower = BaseAttackPower;
 			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
 			{
 				if (Equipment)
 				{
-					MaxHealth += Equipment->HealthPower;
+					SumAttackPower += Equipment->AttackPower;
 				}
 			}
-			if (CurrentHealth > MaxHealth)
-			{
-				CurrentHealth = MaxHealth;
-			}
-			RemainHealthRate = CurrentHealth / MaxHealth;
 		}
 	}
+
 }
 
