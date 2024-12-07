@@ -126,5 +126,6 @@ void AGenshinImpactCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		//Y取反
 		AddControllerPitchInput(-LookAxisVector.Y);
+		
 	}
 }
