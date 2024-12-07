@@ -1,19 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Character/PlayCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "PlayerComponent/HealthComponent.h"
 #include "Projectile/BallProjectile.h"
-#include"PlayerComponent/ProjectileComponent.h"
+#include "PlayerComponent/ProjectileComponent.h"
 #include "PlayerController/SumPlayerController.h"
 #include "PlayerComponent/BlueComponent.h"
+#include "Map/MyMapBackground.h"
 APlayCharacter::APlayCharacter()
 {
 	IsAnimForbidden = false;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	BlueComponent = CreateDefaultSubobject<UBlueComponent>(TEXT("BlueComponent"));
+	MapBackground = CreateDefaultSubobject<AMyMapBackground>(TEXT("MapBackground"));
 
 }
 
@@ -21,7 +20,6 @@ void APlayCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 }
-
 
 void APlayCharacter::BeginPlay()
 {
@@ -59,4 +57,3 @@ void APlayCharacter::RecoverBlueByTick()
 	if (BlueComponent)
 		BlueComponent->RecoverBlueByTick();
 }
-
