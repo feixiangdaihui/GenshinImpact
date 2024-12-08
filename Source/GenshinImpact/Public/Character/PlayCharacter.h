@@ -7,7 +7,6 @@
 #include "Interface/HealthInterface.h"
 #include "PlayCharacter.generated.h"
 
-class AMyMapBackground;
 class UHealthComponent;
 class UProjectileComponent;
 class UBlueComponent;
@@ -50,7 +49,5 @@ public:
 	float CastSpellBlueCost;
 	void RecoverBlueByTick();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<AMyMapBackground> MapBackground;
 
 };
