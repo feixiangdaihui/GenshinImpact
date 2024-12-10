@@ -9,7 +9,6 @@
 #include "Interface/DetectInterface.h"
 #include "Interface/EnemyHealthInterface.h"
 #include "Kismet/GameplayStatics.h"
-#include "GlobalTypes/GlobalTypes.h"
 
 AEnemyCharacter::AEnemyCharacter() : AttackInterface(nullptr), MoveInterface(nullptr), DetectInterface(nullptr), HealthInterface(nullptr)
 {
@@ -95,17 +94,3 @@ void AEnemyCharacter::TakeDammageByPercent(float DammagePercent)
 		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
 	}
 }
-
-GElement AEnemyCharacter::GetElement()
-{
-	if (HealthInterface)
-	{
-		return HealthInterface->GetElementType();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
-		return GElement::Earth;
-	}
-}
-

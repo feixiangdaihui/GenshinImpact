@@ -56,10 +56,8 @@ void AEnemyAIController::Tick(float DeltaTime)
 	else
 		UE_LOG(LogTemp, Error, TEXT("DetectInterface not found in AIController!"));
 
-    if (EnemyCharacter->AttackInterface)
-    {
-        bIsAttacking = EnemyCharacter->AttackInterface->GetIsAttacking();
-    }
+	if (EnemyCharacter->AttackInterface)
+	    bIsAttacking = EnemyCharacter->AttackInterface->GetIsAttacking();
     else
 		UE_LOG(LogTemp, Error, TEXT("AttackInterface not found in AIController!"));
 
@@ -109,24 +107,20 @@ void AEnemyAIController::Tick(float DeltaTime)
         if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking!"));
         }
         else if (EnemyCharacter->AttackInterface->IsInRange())
         {
             EnemyCharacter->MoveInterface->Stop();
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is in attack range!"));
         }
         else
         {
             EnemyCharacter->MoveInterface->ChasePlayer();
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is chasing player!"));
         }
     }
 	else if (EnemyCharacter->DetectInterface->GetLastPerceptionLocation() != FVector::ZeroVector 
         && FVector::Dist(EnemyCharacter->GetActorLocation(), EnemyCharacter->DetectInterface->GetLastPerceptionLocation()) > 200.0f)
     {
 		EnemyCharacter->MoveInterface->MoveTo(EnemyCharacter->DetectInterface->GetLastPerceptionLocation(), 100);
-		UE_LOG(LogTemp, Warning, TEXT("Enemy is moving to last perception location!"));
     }
     else
     {
