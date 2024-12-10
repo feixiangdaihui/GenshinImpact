@@ -4,7 +4,9 @@
 #include "Projectile/BallProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-
+#include "PlayerController/SumPlayerController.h"
+#include "Enemy/EnemyCharacter.h"
+#include "Character\PlayCharacter.h"
 // Sets default values
 ABallProjectile::ABallProjectile()
 {
@@ -26,7 +28,30 @@ ABallProjectile::ABallProjectile()
 
 void ABallProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Projectile Hit"));
+	if (OtherActor)
+	{
+		ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (!PlayerController)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to get PlayerController"));
+			return;
+		}
+		APlayCharacter* Player = Cast<APlayCharacter>(PlayerController->GetPawn());
+		//判断OtherActor是否是敌人
+		AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(OtherActor);
+		if (Enemy)
+		{
+
+			GElement EnemyElementType = Enemy->GetElementType();
+			GElement CharacterElementType = Player->GetElementType();
+			int EnemyLevel = Enemy->GetLevel();
+			int CharacterLevel = Player->GetLevel();
+			float ActualDamage = UGlobalTypes::ModifyDamage(Damage, EnemyLevel, CharacterLevel, EnemyElementType, CharacterElementType);
+			UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), ActualDamage);
+			Enemy->TakeDamageByValue(ActualDamage);
+		}
+		Destroy();
+	}
 	Destroy();
 }
 
@@ -49,4 +74,14 @@ void ABallProjectile::Tick(float DeltaTime)
 	}
 
 }
+float ABallProjectile::GetDamage()
+{
+	return Damage;
+}
+
+void ABallProjectile::SetDamage(float damage)
+{
+	Damage = damage;
+}
+
 

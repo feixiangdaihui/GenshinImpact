@@ -9,6 +9,7 @@
 #include "Interface/DetectInterface.h"
 #include "Interface/EnemyHealthInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "GlobalTypes/GlobalTypes.h"
 
 AEnemyCharacter::AEnemyCharacter() : AttackInterface(nullptr), MoveInterface(nullptr), DetectInterface(nullptr), HealthInterface(nullptr)
 {
@@ -71,7 +72,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 }
 
 
-void AEnemyCharacter::TakeDammageByValue(float DammageValue)
+void AEnemyCharacter::TakeDamageByValue(float DammageValue)
 {
 	if (HealthInterface)
 	{
@@ -83,7 +84,7 @@ void AEnemyCharacter::TakeDammageByValue(float DammageValue)
 	}
 }
 
-void AEnemyCharacter::TakeDammageByPercent(float DammagePercent)
+void AEnemyCharacter::TakeDamageByPercent(float DammagePercent)
 {
 	if (HealthInterface)
 	{
@@ -92,5 +93,31 @@ void AEnemyCharacter::TakeDammageByPercent(float DammagePercent)
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
+	}
+}
+
+GElement AEnemyCharacter::GetElementType() const
+{
+	if (HealthInterface)
+	{
+		return HealthInterface->GetElementType();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
+        return GElement::Earth;
+	}
+}
+
+float AEnemyCharacter::GetLevel() const
+{
+	if (HealthInterface)
+	{
+		return HealthInterface->GetLevel();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
+		return 10.0f;
 	}
 }

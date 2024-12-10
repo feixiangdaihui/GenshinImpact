@@ -12,6 +12,7 @@ class UAttackComponent;
 class UMoveComponent;
 class UDetectComponent;
 class UEnemyHealthComponent;
+enum class GElement : uint8;
 
 UCLASS()
 class GENSHINIMPACT_API AEnemyCharacter : public ACharacter
@@ -46,7 +47,11 @@ public://外部接口
 
     virtual void Tick(float DeltaTime) override;
 
-	void TakeDammageByValue(float DammageValue);
+	void TakeDamageByValue(float DammageValue);
 
-	void TakeDammageByPercent(float DammagePercent);
+	void TakeDamageByPercent(float DammagePercent);
+
+	GElement GetElementType() const;
+
+	float GetLevel() const;
 };

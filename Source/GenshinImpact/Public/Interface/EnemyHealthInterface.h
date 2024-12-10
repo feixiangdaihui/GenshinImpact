@@ -28,6 +28,7 @@ public:
 	virtual float GetCurrentHealth() const = 0;
 	virtual float GetCurrentHealthPercent() const = 0;
 	virtual GElement GetElementType() const = 0;
+	virtual float GetLevel() const = 0;
 
 protected:
 	virtual void Heal() = 0;

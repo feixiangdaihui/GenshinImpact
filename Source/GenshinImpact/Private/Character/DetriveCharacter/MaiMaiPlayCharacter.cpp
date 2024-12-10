@@ -7,6 +7,9 @@
 #include "PlayerComponent/BlueComponent.h"
 #include "PlayerController/SumPlayerController.h"
 #include "EnhancedInputComponent.h"
+#include "PlayerComponent/AttackPowerComponent.h"
+#include "GlobalTypes/GlobalTypes.h"
+#include "PlayerComponent\ElementComponent.h"
 
 
 
@@ -86,6 +89,8 @@ void AMaiMaiPlayCharacter::SpawnNormalAttackProjectile()
 	FRotator SpawnRotation = GetActorRotation();
 	TSubclassOf<ABallProjectile> ProjectileClass = NormalAttackProjectileComponent->ProjectileClass;
 	ABallProjectile* Projectile = GetWorld()->SpawnActor<ABallProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+	Projectile->SetDamage(UGlobalTypes::CalculateDamage(AttackPowerComponent->GetAttackPower(), ElementComponent->GetElementPower())* NormalAttackRate);
+
 }
 
 void AMaiMaiPlayCharacter::SpawnCastSpell()
@@ -99,6 +104,7 @@ void AMaiMaiPlayCharacter::SpawnCastSpell()
 	FRotator SpawnRotation = GetActorRotation();
 	TSubclassOf<ABallProjectile> ProjectileClass = CastSpellProjectileComponent->ProjectileClass;
 	ABallProjectile* Projectile = GetWorld()->SpawnActor<ABallProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+	Projectile->SetDamage(UGlobalTypes::CalculateDamage(AttackPowerComponent->GetAttackPower(), ElementComponent->GetElementPower())*CastSpellRate);
 }
 
 

@@ -29,12 +29,16 @@ protected:
 	float MaxHealth;
 
 	// 当前生命值
-	UPROPERTY(VisibleAnywhere, Category = "Health Settings")
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
 	float CurrentHealth;
 
 	// 回血量
 	UPROPERTY(EditAnywhere, Category = "Health Settings")
 	float HealAmount;
+
+	// 等级
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float Level;
 
 	// 是否死亡
 	UPROPERTY(VisibleAnywhere, Category = "Health Settings")
@@ -65,4 +69,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual float GetCurrentHealthPercent() const override { return CurrentHealth / MaxHealth; }
 	virtual GElement GetElementType() const override { return ElementType; }
+	virtual float GetLevel() const override { return Level; }
 };

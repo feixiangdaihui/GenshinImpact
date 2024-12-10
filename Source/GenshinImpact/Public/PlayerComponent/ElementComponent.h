@@ -21,19 +21,24 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
+	// Called every frame
+
 	//元素类型
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Element")
+	UPROPERTY(EditAnywhere, Category = "Element")
 	GElement ElementType;
 	//元素精通
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Element")
+	UPROPERTY(EditAnywhere, Category = "Element")
 	float BaseElementPower;
-	void UpdateElementPower();
+
 	//总元素精通
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Element")
+	UPROPERTY(EditAnywhere, Category = "Element")
 	float SumElementPower;
-		
+public:
+	void UpdateElementPower();
+	float GetElementPower() { return SumElementPower; }
+	GElement GetElementType() { return ElementType; }
 };
