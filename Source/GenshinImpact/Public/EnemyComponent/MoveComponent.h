@@ -5,6 +5,8 @@
 #include "Interface/MoveInterface.h"
 #include "MoveComponent.generated.h"
 
+class UCharacterMovementComponent;
+
 /**
  * 移动组件，负责实现移动逻辑
  */
@@ -18,17 +20,30 @@ public:
     UMoveComponent();
 
     // 实现接口中的方法
-    virtual void MoveTo(const FVector& Location) override;
+    virtual void MoveTo(const FVector& Location, float AcceptRadius) override;
+    virtual void MoveTo(const FVector& Location, float AcceptRadius, float Speed);
     virtual void Patrol() override;
     virtual void ChasePlayer() override;
-    virtual void TurnTo(const FVector& TargetLocation, float DeltaTime, float TurnRate) override;
+    virtual void TurnTo(const FVector& TargetLocation, float deltaTime) override;
+	virtual void Stop() override;
+	virtual bool GetIsMoving() const override { return bIsMoving; }
+	virtual bool GetIsChasing() const override { return bIsChasing; }
+	virtual bool GetIsResting() const override { return bIsResting; }
+    virtual bool GetIsIdling() const override { return bIsIdling; }
+	virtual FVector GetSpawnLocation() const { return SpawnLocation; }
 
 protected:
     virtual void BeginPlay() override;
 
+    void StopResting() { bIsResting = false; };
+    void StartResting() { bIsResting = true, PatrolTarget = FVector::ZeroVector; };
+
 protected:
     // 出生点位置
     FVector SpawnLocation;
+
+	// 巡逻目标点
+	FVector PatrolTarget;
 
     // 巡逻点范围
     UPROPERTY(EditAnywhere, Category = "Move Settings")
@@ -49,6 +64,14 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Move Settings")
     float TurnRate;
 
+    // 巡逻时间
+	UPROPERTY(EditAnywhere, Category = "Move Settings")
+	float PatrolTime;
+
+    // 休息时间
+	UPROPERTY(EditAnywhere, Category = "Move Settings")
+	float RestTime;
+
 	// 是否正在移动
     bool bIsMoving;
 
@@ -57,4 +80,18 @@ protected:
 
 	// 是否正在休息
 	bool bIsResting;
+
+    // 是否待机
+	bool bIsIdling;
+
+    // 用于记录巡逻时间的计时器
+    FTimerHandle PatrolTimerHandle;
+    
+    // 用于休息时间的计时器
+    FTimerHandle RestTimerHandle;   
+
+	// 移动组件
+    TObjectPtr<UCharacterMovementComponent> EnemyMovement;
 };
+
+

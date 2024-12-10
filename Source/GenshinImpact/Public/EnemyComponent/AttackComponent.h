@@ -17,8 +17,10 @@ public:
     UAttackComponent();
 
     // IAttackInterface 实现
-    virtual void NormalAttack(AActor* TargetActor) override;
-    virtual bool CanAttack(AActor* TargetActor) const override;
+    virtual void NormalAttack() override;
+    virtual bool CanAttack() const override;
+	virtual bool IsInRange() const override;
+	virtual bool GetIsAttacking() const override { return bIsAttacking; }
 
 protected:
     virtual void BeginPlay() override;
@@ -36,8 +38,12 @@ private:
     UPROPERTY(EditAnywhere, Category = "Attack Settings")
     float AttackDamage;
 
+    // 攻击动画时长
+	UPROPERTY(EditAnywhere, Category = "Attack Settings")
+	float AttackAnimationDuration;
+
     // 攻击对象
-    AActor* AttackTarget;
+    AActor* TargetActor;
 
     // 是否可以攻击
     bool bCanAttack;
@@ -47,6 +53,9 @@ private:
 
     // 攻击冷却计时器句柄
     FTimerHandle AttackCooldownTimerHandle;
+
+	// 攻击动画计时器句柄
+    FTimerHandle AttackEndTimerHandle;
 
     // 是否正在攻击
     bool bIsAttacking;

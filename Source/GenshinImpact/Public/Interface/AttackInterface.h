@@ -16,8 +16,13 @@ class GENSHINIMPACT_API IAttackInterface
 
 public:
     // 普通攻击方法
-    virtual void NormalAttack(AActor* TargetActor) = 0;
+    virtual void NormalAttack() = 0;
 
     // 检查是否可以攻击目标
-    virtual bool CanAttack(AActor* TargetActor) const = 0;
+    virtual bool CanAttack() const = 0;
+
+    // 是否在攻击范围
+	virtual bool IsInRange() const = 0;
+
+	virtual bool GetIsAttacking() const = 0;
 };

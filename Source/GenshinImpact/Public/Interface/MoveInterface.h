@@ -16,7 +16,7 @@ class GENSHINIMPACT_API IMoveInterface
 
 public:
     // 移动到指定位置
-    virtual void MoveTo(const FVector& Location) = 0;
+    virtual void MoveTo(const FVector& Location, float AcceptRadius) = 0;
 
     // 执行巡逻逻辑
     virtual void Patrol() = 0;
@@ -25,5 +25,14 @@ public:
     virtual void ChasePlayer() = 0;
 
     // 转向目标位置
-    virtual void TurnTo(const FVector& TargetLocation, float DeltaTime, float TurnRate) = 0;
+    virtual void TurnTo(const FVector& TargetLocation, float DeltaTime) = 0;
+
+    // 停止
+	virtual void Stop() = 0;
+
+	virtual bool GetIsMoving() const = 0;
+	virtual bool GetIsChasing() const = 0;
+	virtual bool GetIsResting() const = 0;
+    virtual bool GetIsIdling() const = 0;
+	virtual FVector GetSpawnLocation() const = 0;
 };

@@ -16,8 +16,12 @@ class GENSHINIMPACT_API IDetectInterface
 
 public:
     // 检测玩家是否在视野范围内
-    virtual bool DetectPlayer(const FVector& OwnerLocation, const FVector& OwnerForwardVector, float SightRadius, float SightAngle) = 0;
+    virtual bool DetectPlayer() = 0;
 
     // 检测是否在听力范围内
-    virtual bool DetectSound(const FVector& OwnerLocation, float HearingRadius) = 0;
+    virtual bool DetectSound() = 0;
+
+	virtual bool GetCanDetectPlayer() const = 0;
+
+	virtual FVector GetLastPerceptionLocation() const = 0;
 };

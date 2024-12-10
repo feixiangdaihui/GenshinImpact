@@ -4,10 +4,14 @@
 #include "GameFramework/Character.h"
 #include "EnemyCharacter.generated.h"
 
-class UHealthComponent;
+class IEnemyHealthInterface;
+class IAttackInterface;
+class IMoveInterface;
+class IDetectInterface;
 class UAttackComponent;
 class UMoveComponent;
 class UDetectComponent;
+class UEnemyHealthComponent;
 
 UCLASS()
 class GENSHINIMPACT_API AEnemyCharacter : public ACharacter
@@ -17,30 +21,32 @@ class GENSHINIMPACT_API AEnemyCharacter : public ACharacter
     friend class UEnemyAnim;
 
 protected://内部变量
-    // 血量组件
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
-    TObjectPtr<UHealthComponent> HealthComponent;
+    IAttackInterface* AttackInterface;
+    IMoveInterface* MoveInterface;
+    IDetectInterface* DetectInterface;
+    IEnemyHealthInterface* HealthInterface;
 
-    // 移动组件
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	TObjectPtr<class UMoveComponent> MoveComponent;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UAttackComponent> AttackComponent;
 
-    // 攻击组件
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
-	TObjectPtr<class UAttackComponent> AttackComponent;
-	
-    // 感知组件
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Detection")
-    TObjectPtr<class UDetectComponent> DetectComponent;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UMoveComponent> MoveComponent;
 
-public://外部接口
-    AEnemyCharacter();
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UDetectComponent> DetectComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UEnemyHealthComponent> HealthComponent;
 
 protected:
     virtual void BeginPlay() override;
 
-public:
+public://外部接口
+    AEnemyCharacter();
+
     virtual void Tick(float DeltaTime) override;
 
-	void UpdateMovementSpeed();
+	void TakeDammageByValue(float DammageValue);
+
+	void TakeDammageByPercent(float DammagePercent);
 };
