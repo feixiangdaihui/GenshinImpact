@@ -2,6 +2,9 @@
 
 
 #include "PlayerComponent/HealthComponent.h"
+#include "PlayerController/SumPlayerController.h"
+#include "Character/PlayCharacter.h"
+#include "PlayerComponent/EquipmentBarComponent.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -18,10 +21,18 @@ void UHealthComponent::DamageHealthByValue(float DamageValue)
 {
 	CurrentHealth -= DamageValue;
 	RemainHealthRate = CurrentHealth / MaxHealth;
+	if (GetOwner()->GetClass()->ImplementsInterface(UHealthInterface::StaticClass()))
+	{
+		IHealthInterface::Execute_TakeDamageByValue(GetOwner());
+	} 
 	if (CurrentHealth <= 0)
 	{
-		CurrentHealth = 0;
-		RemainHealthRate = 0;
+		CurrentHealth = 0.0f;
+		RemainHealthRate = 0.0f;
+		if (GetOwner()->GetClass()->ImplementsInterface(UHealthInterface::StaticClass()))
+		{
+			IHealthInterface::Execute_Die(GetOwner());
+		}
 	}
 }
 
@@ -31,8 +42,8 @@ void UHealthComponent::DamageHealthByRate(float DamageRate)
 	RemainHealthRate = CurrentHealth / MaxHealth;
 	if (CurrentHealth <= 0)
 	{
-		CurrentHealth = 0;
-		RemainHealthRate = 0;
+		CurrentHealth = 0.0f;
+		RemainHealthRate = 0.0f;
 	}
 }
 
@@ -40,9 +51,8 @@ void UHealthComponent::DamageHealthByRate(float DamageRate)
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
-	
+
 }
 
 
@@ -57,5 +67,30 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::SetMaxHealth(float NewMaxHealth)
 {
 	MaxHealth = NewMaxHealth;
+}
+
+void UHealthComponent::UpdateMaxHealth()
+{
+	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController)
+	{
+		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
+		if (PlayerCharacter)
+		{
+			MaxHealth = BaseHealth;
+			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
+			{
+				if (Equipment)
+				{
+					MaxHealth += Equipment->HealthPower;
+				}
+			}
+			if (CurrentHealth > MaxHealth)
+			{
+				CurrentHealth = MaxHealth;
+			}
+			RemainHealthRate = CurrentHealth / MaxHealth;
+		}
+	}
 }
 
