@@ -5,12 +5,17 @@
 #include "CoreMinimal.h"
 #include "GenshinImpact/GenshinImpactCharacter.h"
 #include "Interface/HealthInterface.h"
+#include "GlobalTypes/GlobalTypes.h"
+#include "PlayerComponent/EquipmentBarComponent.h"
 #include "PlayCharacter.generated.h"
 
-class AMyMapBackground;
 class UHealthComponent;
 class UProjectileComponent;
 class UBlueComponent;
+class UElementComponent;
+class UEquipmentBarComponent;
+class UAttackPowerComponent;
+
 /**
  *
  */
@@ -40,17 +45,30 @@ public:
     //血量
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
-	virtual void TakeDamageByValue_Implementation(float DamageAmount) override;
+	virtual void TakeDamageByValue_Implementation() override;
 	virtual void Die_Implementation() override;
 
 	//蓝量
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBlueComponent> BlueComponent;
-	UPROPERTY(EditAnywhere, Category = "Blue")
-	float CastSpellBlueCost;
-	void RecoverBlueByTick();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<AMyMapBackground> MapBackground;
+	void RecoverBlueByTick();
+	
+	//攻击力
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	TObjectPtr<UAttackPowerComponent> AttackPowerComponent;
+
+
+	//元素
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Element")
+	TObjectPtr<UElementComponent> ElementComponent;
+
+	//装备栏
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment")
+	TObjectPtr<UEquipmentBarComponent> EquipmentBarComponent;
+	UFUNCTION(BlueprintCallable)
+	void WearEquipment(AEquipment* Equipment);
+	UFUNCTION(BlueprintCallable)
+	void TakeOffEquipment(EEquipmentType EquipmentType);
 
 };
