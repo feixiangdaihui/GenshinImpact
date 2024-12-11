@@ -4,35 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "AttackPowerComponent.generated.h"
+#include "LevelComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GENSHINIMPACT_API UAttackPowerComponent : public UActorComponent
+class GENSHINIMPACT_API ULevelComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UAttackPowerComponent();
+	ULevelComponent();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-private:	
+public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	//基础攻击力
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	float BaseAttackPower;
-	//总攻击力
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	float SumAttackPower;
-public:
-	//更新攻击力
-	UFUNCTION(BlueprintCallable)
-	void UpdateAttackPower();
-	float GetAttackPower() { return SumAttackPower; }
+	UPROPERTY(EditAnywhere, Category = "Level")
+	int level;
+	float experience;
+	const float experienceToLevelUp = 100.0f;
+	void AddExperience(float experienceToAdd);
+	void LevelUp();
+		
 };

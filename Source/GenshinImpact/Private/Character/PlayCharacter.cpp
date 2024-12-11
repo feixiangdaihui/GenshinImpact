@@ -8,6 +8,8 @@
 #include "PlayerComponent/BlueComponent.h"
 #include "PlayerComponent/ElementComponent.h"
 #include "PlayerComponent/AttackPowerComponent.h"
+#include "PlayerComponent/EquipmentBarComponent.h"
+#include "PlayerComponent/LevelComponent.h"
 
 APlayCharacter::APlayCharacter()
 {
@@ -17,6 +19,7 @@ APlayCharacter::APlayCharacter()
 	EquipmentBarComponent = CreateDefaultSubobject<UEquipmentBarComponent>(TEXT("EquipmentBarComponent"));
 	ElementComponent = CreateDefaultSubobject<UElementComponent>(TEXT("ElementComponent"));
 	AttackPowerComponent = CreateDefaultSubobject<UAttackPowerComponent>(TEXT("AttackPowerComponent"));
+	LevelComponent = CreateDefaultSubobject<ULevelComponent>(TEXT("LevelComponent"));
 
 }
 
@@ -59,6 +62,10 @@ void APlayCharacter::RecoverBlueByTick()
 	if (BlueComponent)
 		BlueComponent->RecoverBlueByTick();
 }
+inline GElement APlayCharacter::GetElementType()
+{
+	return ElementComponent->GetElementType();
+}
 
 void APlayCharacter::WearEquipment(AEquipment* Equipment)
 {
@@ -80,5 +87,10 @@ void APlayCharacter::TakeOffEquipment(EEquipmentType EquipmentType)
 		ElementComponent->UpdateElementPower();
 		AttackPowerComponent->UpdateAttackPower();
 	}
+}
+
+inline int APlayCharacter::GetLevel() const
+{
+	return LevelComponent->level;
 }
 

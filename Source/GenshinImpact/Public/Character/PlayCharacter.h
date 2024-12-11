@@ -15,6 +15,7 @@ class UBlueComponent;
 class UElementComponent;
 class UEquipmentBarComponent;
 class UAttackPowerComponent;
+class ULevelComponent;
 
 /**
  *
@@ -62,6 +63,7 @@ public:
 	//元素
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Element")
 	TObjectPtr<UElementComponent> ElementComponent;
+	inline GElement GetElementType();
 
 	//装备栏
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment")
@@ -70,5 +72,10 @@ public:
 	void WearEquipment(AEquipment* Equipment);
 	UFUNCTION(BlueprintCallable)
 	void TakeOffEquipment(EEquipmentType EquipmentType);
+
+	//等级
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
+	TObjectPtr<ULevelComponent> LevelComponent;
+	inline int GetLevel() const;
 
 };

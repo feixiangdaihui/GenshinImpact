@@ -40,6 +40,12 @@ public:
 	TObjectPtr<UProjectileComponent> NormalAttackProjectileComponent;
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnNormalAttackProjectile();
+	//普通攻击倍率
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	float NormalAttackRate;
+	//技能倍率
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	float CastSpellRate;
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnCastSpell();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue")

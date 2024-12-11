@@ -12,3 +12,21 @@ GElementRestrain UGlobalTypes::GetElementRestrain(GElement self, GElement other)
 	else
 		return GElementRestrain::Neutral;
 }
+
+float UGlobalTypes::ModifyDamage(float Damage, int EnemyLevel, int CharacterLevel, GElement EnemyElement, GElement CharacterElement)
+{
+	GElementRestrain RestrainState = GetElementRestrain(EnemyElement, CharacterElement);
+	int LevelDifference = (EnemyLevel - CharacterLevel) > 0 ? 0 : (EnemyLevel - CharacterLevel);
+	float LevelModify = 1 - LevelDifference * LEVELMODIFY;
+	Damage = Damage * LevelModify;
+	switch (RestrainState)
+	{
+	case GElementRestrain::Positive:
+		return Damage * ELEMENTRESTRAINPOSITIVE;
+	case GElementRestrain::Negative:
+		return Damage * ELEMENTRESTRAINNEGATIVE;
+	case GElementRestrain::Neutral:
+		return Damage;
+	}
+	return 0;
+}

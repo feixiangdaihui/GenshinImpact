@@ -14,33 +14,21 @@ class GENSHINIMPACT_API AEnemyAIController : public AAIController
 public:
     AEnemyAIController();
 
-    // 检测玩家
-    bool DetectPlayer();
-
-    // 巡逻逻辑
-    void Patrol();
-
-    // 追击玩家
-    void ChasePlayer();
-
-    // 攻击玩家
-    void AttackPlayer();
-
-    // 丝滑转向
-    void TurnTowards(const FVector& TargetLocation, float DeltaTime, float TurnRate);
-
 protected:
     virtual void BeginPlay() override;
-
-	void UpdateStatePerTick();
 
 public:
     virtual void Tick(float DeltaTime) override;
 
 protected:
-    TObjectPtr<APawn> ControlledEnemy;
-    TObjectPtr<AActor> TargetPlayer;
-    TObjectPtr<AEnemyCharacter> EnemyCharacter;
-    FVector PatrolTarget;
-    FVector LastKnownPlayerLocation;
+	// 控制的敌人角色
+	AEnemyCharacter* EnemyCharacter;
+
+	bool bCanDetectPlayer;
+	bool bIsAttacking;
+	bool bIsBeingAttacked;
+	bool bIsDead;
+	bool bIsMoving;
+	bool bIsChasing;
+	bool bIsResting;
 };

@@ -26,14 +26,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	float MaxDistance;
 
+	float Damage;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	FVector InitialLocation;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	float GetDamage();
+	void SetDamage(float damage);
 
 };
