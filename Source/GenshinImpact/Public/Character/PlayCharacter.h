@@ -9,7 +9,6 @@
 #include "PlayerComponent/EquipmentBarComponent.h"
 #include "PlayCharacter.generated.h"
 
-class AMyMapBackground;
 class UHealthComponent;
 class UProjectileComponent;
 class UBlueComponent;

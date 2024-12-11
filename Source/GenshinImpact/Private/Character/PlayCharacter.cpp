@@ -6,7 +6,6 @@
 #include "PlayerComponent/ProjectileComponent.h"
 #include "PlayerController/SumPlayerController.h"
 #include "PlayerComponent/BlueComponent.h"
-#include "Map/MyMapBackground.h"
 #include "PlayerComponent/ElementComponent.h"
 #include "PlayerComponent/AttackPowerComponent.h"
 
@@ -15,7 +14,6 @@ APlayCharacter::APlayCharacter()
 	IsAnimForbidden = false;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	BlueComponent = CreateDefaultSubobject<UBlueComponent>(TEXT("BlueComponent"));
-	MapBackground = CreateDefaultSubobject<AMyMapBackground>(TEXT("MapBackground"));
 	EquipmentBarComponent = CreateDefaultSubobject<UEquipmentBarComponent>(TEXT("EquipmentBarComponent"));
 	ElementComponent = CreateDefaultSubobject<UElementComponent>(TEXT("ElementComponent"));
 	AttackPowerComponent = CreateDefaultSubobject<UAttackPowerComponent>(TEXT("AttackPowerComponent"));
