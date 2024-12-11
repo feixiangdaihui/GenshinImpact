@@ -42,8 +42,6 @@ public:
 	void SpawnNormalAttackProjectile();
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnCastSpell();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue")
-	float CastSpellBlueCost;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UProjectileComponent> CastSpellProjectileComponent;
 

@@ -6,17 +6,13 @@
 #include "PlayerComponent/ProjectileComponent.h"
 #include "PlayerController/SumPlayerController.h"
 #include "PlayerComponent/BlueComponent.h"
-#include "PlayerComponent/ElementComponent.h"
-#include "PlayerComponent/AttackPowerComponent.h"
-
+#include "Map/MyMapBackground.h"
 APlayCharacter::APlayCharacter()
 {
 	IsAnimForbidden = false;
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	BlueComponent = CreateDefaultSubobject<UBlueComponent>(TEXT("BlueComponent"));
-	EquipmentBarComponent = CreateDefaultSubobject<UEquipmentBarComponent>(TEXT("EquipmentBarComponent"));
-	ElementComponent = CreateDefaultSubobject<UElementComponent>(TEXT("ElementComponent"));
-	AttackPowerComponent = CreateDefaultSubobject<UAttackPowerComponent>(TEXT("AttackPowerComponent"));
+	MapBackground = CreateDefaultSubobject<AMyMapBackground>(TEXT("MapBackground"));
 
 }
 
@@ -44,41 +40,20 @@ void APlayCharacter::Move(const FInputActionValue& Value)
 	}
 	Super::Move(Value);
 }
-void APlayCharacter::TakeDamageByValue_Implementation()
+void APlayCharacter::TakeDamageByValue_Implementation(float DamageAmount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Character TakeDamageByValue"));
+	HealthComponent->DamageHealthByValue(DamageAmount);
+	if (HealthComponent->CurrentHealth <= 0)
+	{
+		Die();
+	}
 }
 void APlayCharacter::Die_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Character Die"));
-	//退出游戏
-	
 }
 void APlayCharacter::RecoverBlueByTick()
 {
 	if (BlueComponent)
 		BlueComponent->RecoverBlueByTick();
 }
-
-void APlayCharacter::WearEquipment(AEquipment* Equipment)
-{
-	if (EquipmentBarComponent)
-	{
-		EquipmentBarComponent->WearEquipment(Equipment);
-		HealthComponent->UpdateMaxHealth();
-		ElementComponent->UpdateElementPower();
-		AttackPowerComponent->UpdateAttackPower();
-	}
-}
-
-void APlayCharacter::TakeOffEquipment(EEquipmentType EquipmentType)
-{
-	if (EquipmentBarComponent)
-	{
-		EquipmentBarComponent->TakeOffEquipment(EquipmentType);
-		HealthComponent->UpdateMaxHealth();
-		ElementComponent->UpdateElementPower();
-		AttackPowerComponent->UpdateAttackPower();
-	}
-}
-

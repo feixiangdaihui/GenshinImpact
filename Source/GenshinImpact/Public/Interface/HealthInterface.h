@@ -23,8 +23,8 @@ class GENSHINIMPACT_API IHealthInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health")
-	void TakeDamageByValue();
-	virtual void TakeDamageByValue_Implementation() = 0;
+	void TakeDamageByValue(float DamageAmount);
+	virtual void TakeDamageByValue_Implementation(float DamageAmount) = 0;
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health")
 	void Die();
 	virtual void Die_Implementation() = 0;

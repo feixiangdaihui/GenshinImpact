@@ -16,8 +16,6 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float BaseHealth = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth = 100.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float CurrentHealth = 100.0f;
@@ -35,7 +33,6 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetMaxHealth(float NewMaxHealth);
-	void UpdateMaxHealth();
 
 		
 };
