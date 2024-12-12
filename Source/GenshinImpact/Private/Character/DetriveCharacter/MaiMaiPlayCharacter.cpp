@@ -27,12 +27,7 @@ AMaiMaiPlayCharacter::AMaiMaiPlayCharacter()
 void AMaiMaiPlayCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	RecoverBlueByTick();
-	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetController());
-	if (PlayerController)
-	{
-		PlayerController->UpdateHud();
-	}
+
 }
 
 void AMaiMaiPlayCharacter::BeginPlay()
@@ -43,44 +38,12 @@ void AMaiMaiPlayCharacter::BeginPlay()
 void AMaiMaiPlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(CastSpellAction, ETriggerEvent::Started, this, &AMaiMaiPlayCharacter::CastSpell);
-		EnhancedInputComponent->BindAction(NormalAttackAction, ETriggerEvent::Started, this, &AMaiMaiPlayCharacter::NormalAttack);
-		EnhancedInputComponent->BindAction(NormalAttackAction, ETriggerEvent::Completed, this, &AMaiMaiPlayCharacter::NormalAttackEnd);
-		EnhancedInputComponent->BindAction(CastSpellAction, ETriggerEvent::Completed, this, &AMaiMaiPlayCharacter::CastSpellEnd);
-	}
+
 }
 
-void AMaiMaiPlayCharacter::CastSpell()
-{
-	if (IsAnimForbidden)
-	{
-		return;
-	}
-	IsCastingSpell = true;
-}
 
-void AMaiMaiPlayCharacter::CastSpellEnd()
-{
-	IsCastingSpell = false;
-}
 
-void AMaiMaiPlayCharacter::NormalAttack()
-{
-	if (IsAnimForbidden)
-	{
-		return;
-	}
-	IsNormalAttack = true;
-}
-
-void AMaiMaiPlayCharacter::NormalAttackEnd()
-{
-	IsNormalAttack = false;
-}
-
-void AMaiMaiPlayCharacter::SpawnNormalAttackProjectile()
+void AMaiMaiPlayCharacter::SpawnNormalAttack()
 {
 	//直线发射，限制距离，距离一到自动销毁
 //

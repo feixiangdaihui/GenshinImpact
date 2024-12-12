@@ -6,17 +6,11 @@
 void UMaiMaiAnimation::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	IsCastSpell = false;
-	IsNormalAttack = false;
-	SubPlayCharacter = Cast<AMaiMaiPlayCharacter>(GetOwningActor());
+
 }
 
 void UMaiMaiAnimation::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
-	if (SubPlayCharacter )
-	{
-		IsNormalAttack = SubPlayCharacter->IsNormalAttack;
-		IsCastSpell = SubPlayCharacter->IsCastingSpell;
-	}
+
 }

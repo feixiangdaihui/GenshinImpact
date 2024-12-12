@@ -18,6 +18,7 @@ class GENSHINIMPACT_API UPlayCharacterAnimation : public UAnimInstance
 {
 	GENERATED_BODY()
 public:
+
 	UPROPERTY( BlueprintReadOnly, Category = "Movement")
 	TObjectPtr<UCharacterMovementComponent> CharacterMovementComponent;
 	UPROPERTY(BlueprintReadOnly, Category = "Character")
@@ -35,4 +36,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 	void SetIsAnimForbidden(bool bIsAnimForbidden);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool IsNormalAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool IsCastSpell;
 };

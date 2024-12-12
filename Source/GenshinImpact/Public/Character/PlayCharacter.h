@@ -35,7 +35,10 @@ protected:
 
 public:
 	//处理输入
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* CastSpellAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* NormalAttackAction;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
     bool IsAnimForbidden;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
@@ -78,4 +81,30 @@ public:
 	TObjectPtr<ULevelComponent> LevelComponent;
 	inline int GetLevel() const;
 
+	//攻击与技能的输入处理
+	virtual void CastSpell();
+	virtual void CastSpellEnd();
+	virtual void NormalAttack();
+	virtual void NormalAttackEnd();
+
+	//普通攻击倍率
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttackMode")
+	float NormalAttackRate;
+	//技能倍率
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttackMode")
+	float CastSpellRate;
+	UFUNCTION(BlueprintCallable, Category = "AttackMode")
+	virtual void SpawnCastSpell() {}
+	UFUNCTION(BlueprintCallable, Category = "AttackMode")
+	virtual void SpawnNormalAttack(){}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue")
+	float CastSpellBlueCost;
+
+
+	//动作处理
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	bool IsCastingSpell;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	bool IsNormalAttack;
 };

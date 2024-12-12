@@ -14,6 +14,8 @@ void UPlayCharacterAnimation::NativeInitializeAnimation()
 	PlayCharacter = Cast<APlayCharacter>(GetOwningActor());
 	if (PlayCharacter)
 	{
+		IsCastSpell = false;
+		IsNormalAttack = false;
 		CharacterMovementComponent = PlayCharacter->GetCharacterMovement();
 	}
 }
@@ -26,6 +28,9 @@ void UPlayCharacterAnimation::NativeUpdateAnimation(float  DeltaTime)
 		Speed = CharacterMovementComponent->Velocity.Size();
 		IsInAir = CharacterMovementComponent->IsFalling();
 		ZVelocity = CharacterMovementComponent->Velocity.Z;
+
+		IsNormalAttack = PlayCharacter->IsNormalAttack;
+		IsCastSpell = PlayCharacter->IsCastingSpell;
 	}
 }
 

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/PlayCharacterAnimation.h"
-#include "MaiMaiAnimation.generated.h"
-class AMaiMaiPlayCharacter;
+#include "IronFistGirlAnimation.generated.h"
+
 /**
  * 
  */
 UCLASS()
-class GENSHINIMPACT_API UMaiMaiAnimation : public UPlayCharacterAnimation
+class GENSHINIMPACT_API UIronFistGirlAnimation : public UPlayCharacterAnimation
 {
 	GENERATED_BODY()
 public:
@@ -18,7 +18,4 @@ public:
 
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
-
-
-	
 };

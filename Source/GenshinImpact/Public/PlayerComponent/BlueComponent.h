@@ -29,8 +29,11 @@ public:
 	float CurrentBlue ;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blue")
 	float BlueRecoverTick;
+	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void RecoverBlueByTick();
+	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void AddBlue(float BlueValue);
+	UFUNCTION(BlueprintCallable, Category = "Blue")
 	bool ReduceBlue(float BlueValue);
 		
 };

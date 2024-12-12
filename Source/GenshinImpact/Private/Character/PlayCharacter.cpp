@@ -26,6 +26,12 @@ APlayCharacter::APlayCharacter()
 void APlayCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+	RecoverBlueByTick();
+	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->UpdateHud();
+	}
 }
 
 void APlayCharacter::BeginPlay()
@@ -37,6 +43,13 @@ void APlayCharacter::BeginPlay()
 void APlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(CastSpellAction, ETriggerEvent::Started, this, &APlayCharacter::CastSpell);
+		EnhancedInputComponent->BindAction(NormalAttackAction, ETriggerEvent::Started, this, &APlayCharacter::NormalAttack);
+		EnhancedInputComponent->BindAction(NormalAttackAction, ETriggerEvent::Completed, this, &APlayCharacter::NormalAttackEnd);
+		EnhancedInputComponent->BindAction(CastSpellAction, ETriggerEvent::Completed, this, &APlayCharacter::CastSpellEnd);
+	}
 }
 
 void APlayCharacter::Move(const FInputActionValue& Value)
@@ -78,6 +91,33 @@ void APlayCharacter::WearEquipment(AEquipment* Equipment)
 	}
 }
 
+void APlayCharacter::CastSpell()
+{
+	if (IsAnimForbidden)
+	{
+		return;
+	}
+	IsCastingSpell = true;
+}
+
+void APlayCharacter::CastSpellEnd()
+{
+	IsCastingSpell = false;
+}
+
+void APlayCharacter::NormalAttack()
+{
+	if (IsAnimForbidden)
+	{
+		return;
+	}
+	IsNormalAttack = true;
+}
+
+void APlayCharacter::NormalAttackEnd()
+{
+	IsNormalAttack = false;
+}
 void APlayCharacter::TakeOffEquipment(EEquipmentType EquipmentType)
 {
 	if (EquipmentBarComponent)
