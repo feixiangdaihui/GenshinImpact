@@ -41,4 +41,7 @@ public:
 	bool IsNormalAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	bool IsCastSpell;
+
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	void SetIsJudgeNormalAttack(bool bIsNormalAttack);
 };

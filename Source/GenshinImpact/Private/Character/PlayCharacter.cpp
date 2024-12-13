@@ -97,7 +97,10 @@ void APlayCharacter::CastSpell()
 	{
 		return;
 	}
-	IsCastingSpell = true;
+	if (BlueComponent->ReduceBlue(CastSpellBlueCost))
+	{
+		IsCastingSpell = true;
+	}
 }
 
 void APlayCharacter::CastSpellEnd()

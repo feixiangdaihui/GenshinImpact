@@ -107,4 +107,8 @@ public:
 	bool IsCastingSpell;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	bool IsNormalAttack;
+
+	//攻击判定,是否是计算伤害
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttackMode")
+	bool IsJudgeNormalAttack;
 };

@@ -6,8 +6,7 @@
 #include "Enemy/EnemyCharacter.h"
 #include "GlobalTypes/GlobalTypes.h"
 #include "PlayerComponent/AttackPowerComponent.h"
-
-#include"PlayerComponent\ElementComponent.h"
+#include"PlayerComponent/ElementComponent.h"
 AIronFistGirlCharacter::AIronFistGirlCharacter()
 {
 	LeftFistCollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftFistCollisionComponent"));
@@ -101,7 +100,7 @@ void AIronFistGirlCharacter::SpawnCastSpell()
 
 void AIronFistGirlCharacter::FistCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (IsNormalAttack||IsCastingSpell)
+	if (IsJudgeNormalAttack)
 	{
 		if (OtherActor)
 		{

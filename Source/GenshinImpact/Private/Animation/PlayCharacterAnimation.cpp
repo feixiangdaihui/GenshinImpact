@@ -42,4 +42,12 @@ void UPlayCharacterAnimation::SetIsAnimForbidden(bool bIsAnimForbidden)
 	}
 }
 
+void UPlayCharacterAnimation::SetIsJudgeNormalAttack(bool bIsNormalAttack)
+{
+	if (PlayCharacter)
+	{
+		PlayCharacter->IsJudgeNormalAttack = bIsNormalAttack;
+	}
+}
+
 
