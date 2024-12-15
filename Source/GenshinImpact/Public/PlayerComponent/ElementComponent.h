@@ -38,7 +38,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Element")
 	float SumElementPower;
 public:
-	void UpdateElementPower();
+	float GetBaseElementPower() { return BaseElementPower; }
 	float GetElementPower() { return SumElementPower; }
 	GElement GetElementType() { return ElementType; }
+	void UpdateSumElementPowerByAdd(float ElementPower) { SumElementPower = BaseElementPower + ElementPower; }
 };

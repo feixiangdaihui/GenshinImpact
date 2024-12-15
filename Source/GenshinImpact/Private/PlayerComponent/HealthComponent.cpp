@@ -69,28 +69,4 @@ void UHealthComponent::SetMaxHealth(float NewMaxHealth)
 	MaxHealth = NewMaxHealth;
 }
 
-void UHealthComponent::UpdateMaxHealth()
-{
-	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
-	if (PlayerController)
-	{
-		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
-		if (PlayerCharacter)
-		{
-			MaxHealth = BaseHealth;
-			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
-			{
-				if (Equipment)
-				{
-					MaxHealth += Equipment->HealthPower;
-				}
-			}
-			if (CurrentHealth > MaxHealth)
-			{
-				CurrentHealth = MaxHealth;
-			}
-			RemainHealthRate = CurrentHealth / MaxHealth;
-		}
-	}
-}
 

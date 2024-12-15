@@ -10,6 +10,7 @@
 #include "PlayerComponent/AttackPowerComponent.h"
 #include "PlayerComponent/EquipmentBarComponent.h"
 #include "PlayerComponent/LevelComponent.h"
+#include"GameSave/MyGameInstance.h"
 
 APlayCharacter::APlayCharacter()
 {
@@ -82,9 +83,7 @@ void APlayCharacter::WearEquipment(AEquipment* Equipment)
 	if (EquipmentBarComponent)
 	{
 		EquipmentBarComponent->WearEquipment(Equipment);
-		HealthComponent->UpdateMaxHealth();
-		ElementComponent->UpdateElementPower();
-		AttackPowerComponent->UpdateAttackPower();
+		EquipmentBarComponent->UpdateAttribute();
 	}
 }
 
@@ -118,9 +117,40 @@ void APlayCharacter::NormalAttackEnd()
 {
 	IsNormalAttack = false;
 }
-void APlayCharacter::IntializeCharacterMessageAtBeginPlay()
-{
 
+
+void APlayCharacter::LoadCharacterData(FCharacterData& InitData)
+{
+	HealthComponent->CurrentHealth = InitData.CurrentHealth;
+	BlueComponent->CurrentBlue = InitData.CurrentBlue;
+	LevelComponent->Experience = InitData.CurrentExperience;
+	LevelComponent->level = InitData.CurrentLevel;
+	for (int i = 0; i < InitData.EquipmentBarClass.Num(); i++)
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = this;
+		AEquipment* Equipment = GetWorld()->SpawnActor<AEquipment>(FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+		Equipment->SetEquipmentType(static_cast<EEquipmentType>(i));
+		EquipmentBarComponent->WearEquipment(Equipment);
+	}
+
+}
+
+FCharacterData  APlayCharacter::SaveCharacterData()
+{
+	FCharacterData CharacterData;
+	CharacterData.CurrentHealth = HealthComponent->CurrentHealth;
+	CharacterData.CurrentBlue = BlueComponent->CurrentBlue;
+	CharacterData.CurrentExperience = LevelComponent->Experience;
+	CharacterData.CurrentLevel = LevelComponent->level;
+	for (auto Equipment : EquipmentBarComponent->EquipmentBar)
+	{
+		if (Equipment)
+		{
+			CharacterData.EquipmentBarClass.Add(Equipment->GetClass()->GetName());
+		}
+	}
+	return CharacterData;
 }
 
 
@@ -139,9 +169,7 @@ void APlayCharacter::TakeOffEquipment(EEquipmentType EquipmentType)
 	if (EquipmentBarComponent)
 	{
 		EquipmentBarComponent->TakeOffEquipment(EquipmentType);
-		HealthComponent->UpdateMaxHealth();
-		ElementComponent->UpdateElementPower();
-		AttackPowerComponent->UpdateAttackPower();
+		EquipmentBarComponent->UpdateAttribute();
 	}
 }
 

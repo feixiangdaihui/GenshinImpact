@@ -4,11 +4,13 @@
 #include "PlayerController/SumPlayerController.h"
 #include "Hud/BaseHud.h"
 #include "Character/PlayCharacter.h"
+#include"GameSave/MyGameInstance.h"
 
 void ASumPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	InitializeCharacterMessageAtBeginPlay();
+	LoadCharacterData();
 	Hud = Cast<ABaseHud>(GetHUD());
 
 
@@ -74,6 +76,41 @@ void ASumPlayerController::SeqChangeCharacter()
 	}
 	ChangeCharacter(NextCharacterIndex);
 
+}
+
+void ASumPlayerController::SaveCharacterData()
+{
+	for (auto PlayerCharacter : Characters)
+	{
+		FCharacterData CharacterData = PlayerCharacter->SaveCharacterData();
+		UMyGameInstance* GameInstance = Cast<UMyGameInstance>(GetGameInstance());
+		if (GameInstance)
+		{
+			GameInstance->SaveCharacterData(PlayerCharacter->GetName(), CharacterData);
+		}
+	}
+}
+
+void ASumPlayerController::LoadCharacterData()
+{
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		for (auto PlayerCharacter : Characters)
+		{
+			FCharacterData CharacterData;
+			if (GameInstance->GetCharacterData(PlayerCharacter->GetName(), CharacterData))
+			{
+				PlayerCharacter->LoadCharacterData(CharacterData);
+			}
+		}
+	}
+}
+
+void ASumPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	SaveCharacterData();
 }
 
 

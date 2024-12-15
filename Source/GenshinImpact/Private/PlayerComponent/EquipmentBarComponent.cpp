@@ -2,6 +2,12 @@
 
 
 #include "PlayerComponent/EquipmentBarComponent.h"
+#include "PlayerController/SumPlayerController.h"
+#include "Character/PlayCharacter.h"
+#include "PlayerComponent/HealthComponent.h"
+#include "PlayerComponent/AttackPowerComponent.h"
+#include "PlayerComponent/ElementComponent.h"
+
 // Sets default values for this component's properties
 UEquipmentBarComponent::UEquipmentBarComponent()
 {
@@ -52,6 +58,31 @@ void UEquipmentBarComponent::TakeOffEquipment(EEquipmentType& EquipmentType)
 		//放入背包
 		UE_LOG(LogTemp, Warning, TEXT("EquipmentBarComponent: TakeOffEquipment: %s"), *EquipmentBar[static_cast<int32>(EquipmentType)]->GetName());
 		EquipmentBar[static_cast<int32>(EquipmentType)] = nullptr;
+	}
+}
+
+void UEquipmentBarComponent::UpdateAttribute()
+{
+	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController)
+	{
+		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
+		if (PlayerCharacter)
+		{
+			float NewMaxHealth = 0.0f, NewElementPower = 0.0f, NewAttackPower = 0.0f;
+			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
+			{
+				if (Equipment)
+				{
+					NewMaxHealth += Equipment->HealthPower;
+					NewElementPower += Equipment->ElementPower;
+					NewAttackPower += Equipment->AttackPower;
+				}
+			}
+			PlayerCharacter->HealthComponent->UpdateMaxHealthByAdd(NewMaxHealth);
+			PlayerCharacter->ElementComponent->UpdateSumElementPowerByAdd(NewElementPower);
+			PlayerCharacter->AttackPowerComponent->UpdateSumAttackPowerByAdd(NewAttackPower);
+		}
 	}
 }
 

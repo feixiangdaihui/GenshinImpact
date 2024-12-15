@@ -25,9 +25,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UPROPERTY(EditAnywhere, Category = "Level")
 	int level;
-	float experience;
-	const float experienceToLevelUp = 100.0f;
-	void AddExperience(float experienceToAdd);
+	float Experience;
+	const float ExperienceToLevelUp = 100.0f;
+	void AddExperience(float ExperienceToAdd);
 	void LevelUp();
 		
 };

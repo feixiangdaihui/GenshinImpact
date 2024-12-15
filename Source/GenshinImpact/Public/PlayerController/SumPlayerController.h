@@ -32,5 +32,7 @@ public:
 
 	void SeqChangeCharacter();
 
-
+	void SaveCharacterData();
+	void LoadCharacterData();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

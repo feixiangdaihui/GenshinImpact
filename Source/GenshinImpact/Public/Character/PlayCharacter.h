@@ -16,7 +16,7 @@ class UElementComponent;
 class UEquipmentBarComponent;
 class UAttackPowerComponent;
 class ULevelComponent;
-
+struct FCharacterData;
 /**
  *
  */
@@ -117,9 +117,9 @@ public:
 	bool IsJudgeNormalAttack;
 
 
-	void IntializeCharacterMessageAtBeginPlay();
 
-
+	void LoadCharacterData(FCharacterData& );
+	FCharacterData SaveCharacterData();
 private:
 	void SeqChangeCharacter();
 };

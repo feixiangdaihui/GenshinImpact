@@ -35,24 +35,5 @@ void UAttackPowerComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	// ...
 }
 
-void UAttackPowerComponent::UpdateAttackPower()
-{
-	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
-	if (PlayerController)
-	{
-		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
-		if (PlayerCharacter)
-		{
-			SumAttackPower = BaseAttackPower;
-			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
-			{
-				if (Equipment)
-				{
-					SumAttackPower += Equipment->AttackPower;
-				}
-			}
-		}
-	}
 
-}
 

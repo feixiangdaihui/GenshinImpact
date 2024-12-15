@@ -33,6 +33,9 @@ private:
 public:
 	//更新攻击力
 	UFUNCTION(BlueprintCallable)
-	void UpdateAttackPower();
+	
 	float GetAttackPower() { return SumAttackPower; }
+	float GetBaseAttackPower() { return BaseAttackPower; }
+	void UpdateSumAttackPowerByAdd(float AttackPower) { SumAttackPower = BaseAttackPower + AttackPower; }
 };
+

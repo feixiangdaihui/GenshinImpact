@@ -14,19 +14,23 @@ struct FCharacterData
 {
     GENERATED_BODY()
 public:
-    // 角色名称
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    FString CharacterName;
+
+
 
     // 当前血量
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    float Health;
+    float CurrentHealth;
+    //当前蓝量
+	float CurrentBlue;
+	//当前经验
+	float CurrentExperience;
+	//当前等级
+	int CurrentLevel;
+	
+    //装备
+    TArray<FString> EquipmentBarClass;
 
-    // 最大血量
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    float MaxHealth;
 
-    // 可以根据需求添加其他属性，例如经验值、等级等
+
 
 
 

@@ -29,6 +29,6 @@ public:
 	void TakeOffEquipment(EEquipmentType& EquipmentType);
 	int32 GetEquipmentNum() { return EquipmentBar.Num(); }
 	TArray<TObjectPtr<AEquipment>> EquipmentBar;
-
+	void UpdateAttribute();
 		
 };

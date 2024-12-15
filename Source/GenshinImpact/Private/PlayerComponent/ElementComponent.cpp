@@ -34,24 +34,5 @@ void UElementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 }
 
-void UElementComponent::UpdateElementPower()
-{
-	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
-	if (PlayerController)
-	{
-		SumElementPower = 0;
-		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
-		if (PlayerCharacter)
-		{
-			SumElementPower = BaseElementPower;
-			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
-			{
-				if (Equipment)
-				{
-					SumElementPower += Equipment->ElementPower;
-				}
-			}
-		}
-	}
-}
+
 
