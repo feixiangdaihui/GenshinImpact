@@ -7,6 +7,7 @@
 #include "BaseHud.generated.h"
 class URealTimeWidget;
 class ASumPlayerController;
+class APlayCharacter;
 /**
  * 
  */
@@ -16,16 +17,19 @@ class GENSHINIMPACT_API ABaseHud : public AHUD
 	GENERATED_BODY()
 public:
 	ABaseHud();
+	//RealTimeWidget
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<URealTimeWidget> RealTimeWidgetClass;
-	UPROPERTY()
-	TObjectPtr<URealTimeWidget> RealTimeWidget;
+	TArray<TSubclassOf<URealTimeWidget>> RealTimeWidgetClasses;
+
+
+
 	UPROPERTY()
 	TObjectPtr<ASumPlayerController> PlayerController;
+	TArray<TObjectPtr<APlayCharacter>> Characters;
+
+	TArray<TObjectPtr<URealTimeWidget>> RealTimeWidgets;
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	void InitializeHud();
-	void UpdateHud();
 	void UpdateRealTimeWidget();
 };

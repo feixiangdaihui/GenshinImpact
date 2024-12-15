@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "SumPlayerController.generated.h"
-
+class ABaseHud;
+class APlayCharacter;
 /**
  * 
  */
@@ -15,9 +16,21 @@ class GENSHINIMPACT_API ASumPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	void UpdateHud();
 	TObjectPtr<ABaseHud> Hud;
 	virtual void BeginPlay() override;
-	void ChangeCharacter();
-	
+	void InitializeCharacterMessageAtBeginPlay();
+	void ChangeCharacter(int CharacterIndex);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	TArray<TSubclassOf<APlayCharacter>> CharacterClasses;
+
+
+	TArray<TObjectPtr<APlayCharacter>> Characters;
+	int CurrentCharacterIndex;
+
+	void SetCharacterVisibility(int32 CharacterIndex, bool bVisible);
+
+	void SeqChangeCharacter();
+
+
 };

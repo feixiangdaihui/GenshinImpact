@@ -11,73 +11,49 @@
 ABaseHud::ABaseHud()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 
 }
 void ABaseHud::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerController = Cast<ASumPlayerController>(GetOwningPlayerController());
-	if (RealTimeWidgetClass)
+	if (PlayerController)
 	{
-		RealTimeWidget = CreateWidget<URealTimeWidget>(GetWorld(), RealTimeWidgetClass);
-		RealTimeWidget->AddToViewport();
+		Characters = PlayerController->Characters;
 	}
-	InitializeHud();
-}
-
-void ABaseHud::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	UpdateHud();
-}
-
-void ABaseHud::InitializeHud()
-{
-	if (RealTimeWidgetClass && PlayerController)
+	for (int i = 0; i < RealTimeWidgetClasses.Num(); i++)
 	{
-		APlayCharacter* Player = Cast<APlayCharacter>(PlayerController->GetPawn());
-		if (Player)
+		if (RealTimeWidgetClasses[i])
 		{
-			UE_LOG(LogTemp, Warning, TEXT("InitializeHud"));
-			UHealthComponent* HealthComponent = Player->HealthComponent;
-			if (HealthComponent)
+			URealTimeWidget* Widget = CreateWidget<URealTimeWidget>(GetWorld(), RealTimeWidgetClasses[i]);
+			if (Widget)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("InitializeWidget"));
-				RealTimeWidget->InitializeWidget(HealthComponent->MaxHealth, 100.0f, HealthComponent->RemainHealthRate, 1.0f);
+				RealTimeWidgets.Add(Widget);
+				Widget->AddToViewport();
 			}
 		}
 	}
 }
 
-void ABaseHud::UpdateHud()
+void ABaseHud::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
 	UpdateRealTimeWidget();
 }
 
+
+
+
 void ABaseHud::UpdateRealTimeWidget()
 {
-	if (RealTimeWidgetClass && PlayerController)
+	for (int i = 0; i < Characters.Num(); i++)
 	{
-		APlayCharacter* Player = Cast<APlayCharacter>(PlayerController->GetPawn());
-		if (Player)
+		if (Characters[i])
 		{
-			UHealthComponent* HealthComponent = Player->HealthComponent;
-			UBlueComponent* BlueComponent = Player->BlueComponent;
-			if (HealthComponent)
+			if (RealTimeWidgets[i])
 			{
-				RealTimeWidget->CurrentHealth = HealthComponent->CurrentHealth;
-				RealTimeWidget->MaxHealth = HealthComponent->MaxHealth;
-				RealTimeWidget->UpdateHealthBarPercent(HealthComponent->RemainHealthRate);
-
-			}
-			if (BlueComponent)
-			{
-				//打印蓝量
-				RealTimeWidget->CurrentBlue = BlueComponent->CurrentBlue;
-				RealTimeWidget->MaxBlue = BlueComponent->MaxBlue;
-				RealTimeWidget->UpdateBlueBarPercent(BlueComponent->CurrentBlue / BlueComponent->MaxBlue);
-
+				RealTimeWidgets[i]->UpdateWidget(Characters[i]->HealthComponent->MaxHealth, Characters[i]->HealthComponent->CurrentHealth, Characters[i]->BlueComponent->MaxBlue, Characters[i]->BlueComponent->CurrentBlue);
 			}
 		}
 	}

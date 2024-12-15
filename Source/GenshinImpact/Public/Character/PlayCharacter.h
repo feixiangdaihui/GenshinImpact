@@ -39,6 +39,10 @@ public:
 	UInputAction* CastSpellAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* NormalAttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ChangeCharacterAction;
+
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
     bool IsAnimForbidden;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
@@ -111,4 +115,11 @@ public:
 	//攻击判定,是否是计算伤害
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttackMode")
 	bool IsJudgeNormalAttack;
+
+
+	void IntializeCharacterMessageAtBeginPlay();
+
+
+private:
+	void SeqChangeCharacter();
 };

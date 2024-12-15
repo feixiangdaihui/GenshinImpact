@@ -4,21 +4,13 @@
 #include "Widget/RealTimeWidget.h"
 #include "Components/ProgressBar.h"
 
-void URealTimeWidget::InitializeWidget(float _MaxHealth, float _MaxBlue, float Healthpercent, float Bluepercent)
+void URealTimeWidget::UpdateWidget(float _MaxHealth, float _CurrentHealth, float _MaxBlue, float _CurrentBlue)
 {
 	MaxHealth = _MaxHealth;
 	MaxBlue = _MaxBlue;
-	CurrentHealth = MaxHealth * Healthpercent;
-	CurrentBlue = MaxBlue * Bluepercent;
-	HealthBar->SetPercent(Healthpercent);
-	BlueBar->SetPercent(Bluepercent);
-}
-void URealTimeWidget::UpdateHealthBarPercent(float HealthPercent)
-{
-	HealthBar->SetPercent(HealthPercent);
+	CurrentHealth = _CurrentHealth;
+	CurrentBlue = _CurrentBlue;
+	HealthBar->SetPercent(CurrentHealth / MaxHealth);
+	BlueBar->SetPercent(CurrentBlue / MaxBlue);
 }
 
-void URealTimeWidget::UpdateBlueBarPercent(float BluePercent)
-{
-	BlueBar->SetPercent(BluePercent);
-}

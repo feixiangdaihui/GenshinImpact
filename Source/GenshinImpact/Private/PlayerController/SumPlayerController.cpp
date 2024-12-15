@@ -3,23 +3,80 @@
 
 #include "PlayerController/SumPlayerController.h"
 #include "Hud/BaseHud.h"
-void ASumPlayerController::UpdateHud()
-{
-	if (Hud)
-	{
-		Hud->UpdateHud();
-	}
-}
+#include "Character/PlayCharacter.h"
 
 void ASumPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	InitializeCharacterMessageAtBeginPlay();
 	Hud = Cast<ABaseHud>(GetHUD());
 
 
 }
 
-void ASumPlayerController::ChangeCharacter()
+void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 {
+	APlayCharacter* FirstCharacter = Cast<APlayCharacter>(GetPawn());
+	Characters.Add(FirstCharacter);
+	CurrentCharacterIndex = 0;
+	FVector CurrentCharacterLocation = FirstCharacter->GetActorLocation();
+	FRotator CurrentCharacterRotation = FirstCharacter->GetActorRotation();
+	for (int i = 1; i < CharacterClasses.Num(); i++)
+	{
+		if (CharacterClasses[i])
+		{
+			FActorSpawnParameters SpawnParameters;
+			SpawnParameters.Owner = this;
+			APlayCharacter* NewCharacter = GetWorld()->SpawnActor<APlayCharacter>(CharacterClasses[i], CurrentCharacterLocation, CurrentCharacterRotation, SpawnParameters);
+			Characters.Add(NewCharacter);
+			SetCharacterVisibility(i, false);
+		}
+	}
 
 }
+
+void ASumPlayerController::ChangeCharacter(int CharacterIndex)
+{
+	if (Characters.IsValidIndex(CharacterIndex))
+	{
+		//获取当前角色位置，控制现在的角色转移到这个位置
+		FVector CurrentCharacterLocation = Characters[CurrentCharacterIndex]->GetActorLocation();
+		FRotator CurrentCharacterRotation = Characters[CurrentCharacterIndex]->GetActorRotation();
+		Characters[CharacterIndex]->SetActorLocationAndRotation(CurrentCharacterLocation, CurrentCharacterRotation);
+		//隐藏当前角色
+		SetCharacterVisibility(CurrentCharacterIndex, false);
+		SetCharacterVisibility(CharacterIndex, true);
+		CurrentCharacterIndex = CharacterIndex;
+
+		OnPossess(Characters[CharacterIndex]);
+
+
+	}
+
+}
+
+void ASumPlayerController::SetCharacterVisibility(int32 CharacterIndex, bool bVisible)
+{
+	if (Characters.IsValidIndex(CharacterIndex))
+	{
+		Characters[CharacterIndex]->SetActorHiddenInGame(!bVisible);
+		Characters[CharacterIndex]->SetActorEnableCollision(bVisible);
+		Characters[CharacterIndex]->SetActorTickEnabled(bVisible);
+	}
+}
+
+void ASumPlayerController::SeqChangeCharacter()
+{
+	int NextCharacterIndex = CurrentCharacterIndex + 1;
+	if (NextCharacterIndex >= Characters.Num())
+	{
+		NextCharacterIndex = 0;
+	}
+	ChangeCharacter(NextCharacterIndex);
+
+}
+
+
+
+
+

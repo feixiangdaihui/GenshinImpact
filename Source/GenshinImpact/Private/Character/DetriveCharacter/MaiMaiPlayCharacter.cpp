@@ -58,10 +58,7 @@ void AMaiMaiPlayCharacter::SpawnNormalAttack()
 
 void AMaiMaiPlayCharacter::SpawnCastSpell()
 {
-	if (!BlueComponent->ReduceBlue(CastSpellBlueCost))
-	{
-		return;
-	}
+
 	FVector InitialLocation = CastSpellProjectileComponent->GetComponentLocation();
 	FVector SpawnLocation = InitialLocation + GetActorForwardVector();
 	FRotator SpawnRotation = GetActorRotation();

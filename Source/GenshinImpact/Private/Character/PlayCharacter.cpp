@@ -27,11 +27,7 @@ void APlayCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 	RecoverBlueByTick();
-	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetController());
-	if (PlayerController)
-	{
-		PlayerController->UpdateHud();
-	}
+
 }
 
 void APlayCharacter::BeginPlay()
@@ -49,6 +45,7 @@ void APlayCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(NormalAttackAction, ETriggerEvent::Started, this, &APlayCharacter::NormalAttack);
 		EnhancedInputComponent->BindAction(NormalAttackAction, ETriggerEvent::Completed, this, &APlayCharacter::NormalAttackEnd);
 		EnhancedInputComponent->BindAction(CastSpellAction, ETriggerEvent::Completed, this, &APlayCharacter::CastSpellEnd);
+		EnhancedInputComponent->BindAction(ChangeCharacterAction, ETriggerEvent::Started, this, &APlayCharacter::SeqChangeCharacter);
 	}
 }
 
@@ -120,6 +117,22 @@ void APlayCharacter::NormalAttack()
 void APlayCharacter::NormalAttackEnd()
 {
 	IsNormalAttack = false;
+}
+void APlayCharacter::IntializeCharacterMessageAtBeginPlay()
+{
+
+}
+
+
+
+
+void APlayCharacter::SeqChangeCharacter()
+{
+	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->SeqChangeCharacter();
+	}
 }
 void APlayCharacter::TakeOffEquipment(EEquipmentType EquipmentType)
 {

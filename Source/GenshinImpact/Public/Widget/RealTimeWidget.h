@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RealTimeWidget.generated.h"
 class UProgressBar;
+
 /**
  * 
  */
@@ -18,6 +19,8 @@ public:
 	UProgressBar* HealthBar;
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* BlueBar;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	float MaxHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
@@ -26,9 +29,9 @@ public:
 	float CurrentHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	float CurrentBlue;
-	void InitializeWidget(float _MaxHealth, float _MaxBlue, float Healthpercent = 1.0f, float Bluepercent = 1.0f);
-	void UpdateHealthBarPercent(float HealthPercent);
-	void UpdateBlueBarPercent(float BluePercent);
+	void UpdateWidget(float _MaxHealth, float _CurrentHealth, float _MaxBlue, float _CurrentBlue);
+
+
 
 	
 };
