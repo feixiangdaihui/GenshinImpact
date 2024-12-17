@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "SumPlayerController.generated.h"
+#define CHARACTERNUM 3
 class ABaseHud;
 class APlayCharacter;
 /**
@@ -18,6 +19,7 @@ class GENSHINIMPACT_API ASumPlayerController : public APlayerController
 public:
 	TObjectPtr<ABaseHud> Hud;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	void InitializeCharacterMessageAtBeginPlay();
 	void ChangeCharacter(int CharacterIndex);
 
