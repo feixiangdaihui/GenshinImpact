@@ -16,6 +16,21 @@ void ASumPlayerController::BeginPlay()
 
 }
 
+void ASumPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	FVector CurrentCharacterLocation = Characters[CurrentCharacterIndex]->GetActorLocation();
+	FRotator CurrentCharacterRotation = Characters[CurrentCharacterIndex]->GetActorRotation();
+	for (int Index = 0;Index < CHARACTERNUM;Index++)
+	{
+		if (Index != CurrentCharacterIndex)
+			Characters[Index]->SetActorLocationAndRotation(CurrentCharacterLocation, CurrentCharacterRotation);
+
+	}
+		
+	
+}
+
 void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 {
 	APlayCharacter* FirstCharacter = Cast<APlayCharacter>(GetPawn());
@@ -41,10 +56,7 @@ void ASumPlayerController::ChangeCharacter(int CharacterIndex)
 {
 	if (Characters.IsValidIndex(CharacterIndex))
 	{
-		//获取当前角色位置，控制现在的角色转移到这个位置
-		FVector CurrentCharacterLocation = Characters[CurrentCharacterIndex]->GetActorLocation();
-		FRotator CurrentCharacterRotation = Characters[CurrentCharacterIndex]->GetActorRotation();
-		Characters[CharacterIndex]->SetActorLocationAndRotation(CurrentCharacterLocation, CurrentCharacterRotation);
+
 		//隐藏当前角色
 		SetCharacterVisibility(CurrentCharacterIndex, false);
 		SetCharacterVisibility(CharacterIndex, true);
