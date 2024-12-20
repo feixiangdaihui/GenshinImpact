@@ -19,15 +19,17 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	UPROPERTY(EditAnywhere, Category = "Level")
+	UPROPERTY(EditAnywhere, Category = "Level",meta = (AllowPrivateAccess = "true"))
 	int level;
 	float Experience;
 	const float ExperienceToLevelUp = 100.0f;
+public:	
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable, Category = "Level")
 	void AddExperience(float ExperienceToAdd);
 	void LevelUp();
-		
+	void InitializeLevelComponent(int InitLevel, float InitExperience) { level = InitLevel; Experience = InitExperience; }
+	float GetCurrentExperience() { return Experience; }
+	int GetCurrentLevel() { return level; }
 };

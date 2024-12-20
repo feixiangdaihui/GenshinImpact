@@ -53,7 +53,7 @@ void ABaseHud::UpdateRealTimeWidget()
 		{
 			if (RealTimeWidgets[i])
 			{
-				RealTimeWidgets[i]->UpdateWidget(Characters[i]->HealthComponent->MaxHealth, Characters[i]->HealthComponent->CurrentHealth, Characters[i]->BlueComponent->MaxBlue, Characters[i]->BlueComponent->CurrentBlue);
+				RealTimeWidgets[i]->UpdateWidget(Characters[i]->HealthComponent->GetMaxHealth(), Characters[i]->HealthComponent->GetCurrentHealth(), Characters[i]->BlueComponent->GetMaxBlue(), Characters[i]->BlueComponent->GetCurrentBlue());
 			}
 		}
 	}

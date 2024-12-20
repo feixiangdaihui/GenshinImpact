@@ -121,10 +121,10 @@ void APlayCharacter::NormalAttackEnd()
 
 void APlayCharacter::LoadCharacterData(FCharacterData& InitData)
 {
-	HealthComponent->CurrentHealth = InitData.CurrentHealth;
-	BlueComponent->CurrentBlue = InitData.CurrentBlue;
-	LevelComponent->Experience = InitData.CurrentExperience;
-	LevelComponent->level = InitData.CurrentLevel;
+	
+	HealthComponent->InitializeHealthComponent(InitData.CurrentHealth);
+	BlueComponent->InitializeBlueComponent(InitData.CurrentBlue);
+	LevelComponent->InitializeLevelComponent(InitData.CurrentLevel, InitData.CurrentExperience);
 	for (int i = 0; i < InitData.EquipmentBarClass.Num(); i++)
 	{
 		FActorSpawnParameters SpawnParameters;
@@ -139,10 +139,10 @@ void APlayCharacter::LoadCharacterData(FCharacterData& InitData)
 FCharacterData  APlayCharacter::SaveCharacterData()
 {
 	FCharacterData CharacterData;
-	CharacterData.CurrentHealth = HealthComponent->CurrentHealth;
-	CharacterData.CurrentBlue = BlueComponent->CurrentBlue;
-	CharacterData.CurrentExperience = LevelComponent->Experience;
-	CharacterData.CurrentLevel = LevelComponent->level;
+	CharacterData.CurrentHealth = HealthComponent->GetCurrentHealth();
+	CharacterData.CurrentBlue = BlueComponent->GetCurrentBlue();
+	CharacterData.CurrentExperience = LevelComponent->GetCurrentExperience();
+	CharacterData.CurrentLevel = LevelComponent->GetCurrentLevel();
 	for (auto Equipment : EquipmentBarComponent->EquipmentBar)
 	{
 		if (Equipment)
@@ -175,6 +175,6 @@ void APlayCharacter::TakeOffEquipment(EEquipmentType EquipmentType)
 
 inline int APlayCharacter::GetLevel() const
 {
-	return LevelComponent->level;
+	return LevelComponent->GetCurrentLevel();
 }
 

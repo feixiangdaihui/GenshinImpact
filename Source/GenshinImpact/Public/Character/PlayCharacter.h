@@ -24,7 +24,7 @@ UCLASS()
 class GENSHINIMPACT_API APlayCharacter : public AGenshinImpactCharacter, public IHealthInterface
 {
     GENERATED_BODY()
-
+	friend class UPlayCharacterAnimation;
 public:
 
     APlayCharacter();
@@ -32,8 +32,9 @@ public:
     virtual void BeginPlay() override;
 protected:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 
-public:
+protected:
 	//处理输入
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* CastSpellAction;
@@ -48,7 +49,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
     float Speed;
 	virtual void Move(const FInputActionValue& Value);
-
+public:
 	//组件
     //血量
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
@@ -85,6 +86,7 @@ public:
 	TObjectPtr<ULevelComponent> LevelComponent;
 	inline int GetLevel() const;
 
+protected:
 	//攻击与技能的输入处理
 	virtual void CastSpell();
 	virtual void CastSpellEnd();
@@ -117,9 +119,11 @@ public:
 	bool IsJudgeNormalAttack;
 
 
-
+public:
+	//保存游戏相关
 	void LoadCharacterData(FCharacterData& );
 	FCharacterData SaveCharacterData();
 private:
+	//切换角色
 	void SeqChangeCharacter();
 };
