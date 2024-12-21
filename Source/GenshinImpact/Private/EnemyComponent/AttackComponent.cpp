@@ -14,8 +14,10 @@ UAttackComponent::UAttackComponent()
     AttackCooldown = 2.0f;  // 每次攻击的冷却时间
     AttackRange = 200.0f;   // 默认攻击范围
 	AttackDamage = 10.0f;   // 默认攻击伤害
+	AttackAnimationDuration = 0.6f;// 默认攻击动画时长
     bIsAttacking = false;   // 初始状态不在攻击
     bCanAttack = true;      // 初始状态可以攻击
+	TargetActor = nullptr;  // 初始状态没有攻击对象
 }
 
 void UAttackComponent::BeginPlay()
@@ -95,7 +97,7 @@ void UAttackComponent::NormalAttack()
             }
             bIsAttacking = false;
         },
-        0.6f, // 假设动画持续时间为0.6秒，可以根据实际动画调整
+        AttackAnimationDuration,
         false
     );
 

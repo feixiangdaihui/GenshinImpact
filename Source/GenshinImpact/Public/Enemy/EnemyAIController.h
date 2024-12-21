@@ -31,4 +31,7 @@ protected:
 	bool bIsMoving;
 	bool bIsChasing;
 	bool bIsResting;
+
+	// 受击状态计时器
+	FTimerHandle DestroyTimerHandle;
 };
