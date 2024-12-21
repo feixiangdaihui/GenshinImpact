@@ -18,9 +18,16 @@ public:
 
     // IAttackInterface 实现
     virtual void NormalAttack() override;
+    virtual void NormalRemoteAttack() override { return; };
+    virtual void SkillAttack(int SkillOpt) override { return; };
     virtual bool CanAttack() const override;
-	virtual bool IsInRange() const override;
-	virtual bool GetIsAttacking() const override { return bIsAttacking; }
+    virtual bool CanRemoteAttack() const override { return false; }
+    virtual bool CanSkillAttack() const override { return false; }
+    virtual bool IsInRange() const override;
+	virtual bool IsInRemoteRange() const override { return false; }
+    virtual bool IsInSkillRange() const override { return false; }
+    virtual bool GetIsAttacking() const override { return bIsAttacking; }
+    virtual bool GetIsSkillAttacking() const override { return false; }
 
 protected:
     virtual void BeginPlay() override;
@@ -39,8 +46,8 @@ private:
     float AttackDamage;
 
     // 攻击动画时长
-	UPROPERTY(EditAnywhere, Category = "Attack Settings")
-	float AttackAnimationDuration;
+    UPROPERTY(EditAnywhere, Category = "Attack Settings")
+    float AttackAnimationDuration;
 
     // 攻击对象
     AActor* TargetActor;
@@ -54,7 +61,7 @@ private:
     // 攻击冷却计时器句柄
     FTimerHandle AttackCooldownTimerHandle;
 
-	// 攻击动画计时器句柄
+    // 攻击动画计时器句柄
     FTimerHandle AttackEndTimerHandle;
 
     // 是否正在攻击

@@ -82,23 +82,29 @@ void AEnemyAIController::Tick(float DeltaTime)
     if (bIsDead)
     {
         // 如果敌人死亡，停止所有行为
-        EnemyCharacter->MoveInterface->Stop();
-		UE_LOG(LogTemp, Warning, TEXT("Enemy is dead!"));
-        return;
+        EnemyCharacter->MoveInterface->Stop();/*
+		GetWorld()->GetTimerManager().SetTimer(
+            DestroyTimerHandle,
+			[this]() {EnemyCharacter->Destroy(); },
+			EnemyCharacter->DestroyTime,
+			false);*/
+		//UE_LOG(LogTemp, Warning, TEXT("Enemy is dead!"));
     }
     else if (bIsBeingAttacked)
     {
-        // 如果敌人被攻击，反击或逃跑
-        if (EnemyCharacter->HealthInterface->GetCurrentHealth() > EnemyCharacter->HealthInterface->GetMaxHealth() / 10.0f
-            && EnemyCharacter->AttackInterface->CanAttack())
+        if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking back!"));
+            UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking back!"));
+        }
+        else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
+        {
+            EnemyCharacter->AttackInterface->NormalRemoteAttack();
+            UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking back!"));
         }
         else
         {
-            EnemyCharacter->MoveInterface->MoveTo(EnemyCharacter->MoveInterface->GetSpawnLocation(), 100);
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is running away!"));
+            EnemyCharacter->MoveInterface->ChasePlayer();
         }
     }
     else if (bCanDetectPlayer)
@@ -108,7 +114,11 @@ void AEnemyAIController::Tick(float DeltaTime)
         {
             EnemyCharacter->AttackInterface->NormalAttack();
         }
-        else if (EnemyCharacter->AttackInterface->IsInRange())
+        else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
+        {
+			EnemyCharacter->AttackInterface->NormalRemoteAttack();
+        }
+        else if (EnemyCharacter->AttackInterface->IsInRange() || EnemyCharacter->AttackInterface->IsInRemoteRange())
         {
             EnemyCharacter->MoveInterface->Stop();
         }

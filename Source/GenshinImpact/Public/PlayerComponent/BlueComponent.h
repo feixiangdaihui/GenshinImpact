@@ -34,6 +34,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void AddBlue(float BlueValue);
 	UFUNCTION(BlueprintCallable, Category = "Blue")
+	void AddBlueByRate(float Rate);
+	UFUNCTION(BlueprintCallable, Category = "Blue")
 	bool ReduceBlue(float BlueValue);
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	float GetCurrentBlue() { return CurrentBlue; }

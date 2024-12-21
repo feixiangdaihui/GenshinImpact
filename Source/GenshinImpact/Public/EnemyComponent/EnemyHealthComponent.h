@@ -52,7 +52,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Health Settings")
 	GElement ElementType;
 
-	// 受击状态计时器
 	FTimerHandle BeAttackedStateTimerHandle;
 
 public:	
@@ -62,6 +61,7 @@ public:
 	virtual void TakeDamageByValue(float DamageAmount, float TimeToBeAttacked = 0.5f) override;
 	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) override;
 	virtual bool GetIsBeingAttacked() const override { return bIsBeingAttacked; }
+	UFUNCTION(BlueprintCallable)
 	virtual bool GetIsDead() const override { return bIsDead; }
 	UFUNCTION(BlueprintCallable)
 	virtual float GetMaxHealth() const override { return MaxHealth; }

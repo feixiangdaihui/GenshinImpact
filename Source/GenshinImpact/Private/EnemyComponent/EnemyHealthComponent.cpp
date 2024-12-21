@@ -8,7 +8,7 @@ UEnemyHealthComponent::UEnemyHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	MaxHealth = 100.0f;
+	MaxHealth = 1000.0f;
 	CurrentHealth = MaxHealth;
 	HealAmount = 10.0f;
 	bIsDead = false;
@@ -37,6 +37,7 @@ void UEnemyHealthComponent::TakeDamageByValue(float DamageAmount, float TimeToBe
 	CurrentHealth -= DamageAmount;
 	if (CurrentHealth <= 0.0f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy is dead!"));
 		CurrentHealth = 0.0f;
 		Die();
 		return;
@@ -79,6 +80,8 @@ void UEnemyHealthComponent::Die()
 	bIsBeingAttacked = false;
 	bIsDead = true;
 	CurrentHealth = 0.0f;
+	UE_LOG(LogTemp, Warning, TEXT("bIsDead: %s"), bIsDead ? TEXT("true") : TEXT("false"));
+
 }
 
 void UEnemyHealthComponent::Heal()
