@@ -6,15 +6,39 @@
 #include "Character/PlayCharacter.h"
 #include"GameSave/MyGameInstance.h"
 
+
 void ASumPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	InitializeCharacterMessageAtBeginPlay();
 	LoadCharacterData();
+
 	Hud = Cast<ABaseHud>(GetHUD());
+	if (!Hud)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HUD is not of type ABaseHud."));
+	}
 
-
+	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
+	if (PlayerCharacter)
+	{
+		UCPP_InventoryComponent* FoundInventoryComponent = PlayerCharacter->FindComponentByClass<UCPP_InventoryComponent>();
+		if (FoundInventoryComponent)
+		{
+			InventoryComponent = FoundInventoryComponent;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("InventoryComponent not found on PlayerCharacter."));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerPawn is not a valid ACharacter."));
+	}
 }
+
 
 void ASumPlayerController::Tick(float DeltaTime)
 {
@@ -125,7 +149,33 @@ void ASumPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	SaveCharacterData();
 }
 
+void ASumPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		// 绑定 ToggleInventoryAction 到 ToggleInventoryWidget
+		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Triggered, this, &ASumPlayerController::ToggleInventory);
+	}
+}
 
 
-
+void ASumPlayerController::ToggleInventory()
+{
+	if (InventoryComponent)
+	{
+		// 使用反射调用蓝图函数
+		FName FunctionName = FName("ToggleInventoryWidget");
+		UFunction* Function = InventoryComponent->FindFunction(FunctionName);
+		if (Function)
+		{
+			InventoryComponent->ProcessEvent(Function, nullptr);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Function %s not found in InventoryComponent."), *FunctionName.ToString());
+		}
+	}
+}
 
