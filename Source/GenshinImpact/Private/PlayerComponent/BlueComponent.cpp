@@ -56,3 +56,12 @@ bool UBlueComponent::ReduceBlue(float BlueValue)
 	return false;
 }
 
+void UBlueComponent::RecoverBlueByValue(float BlueValue)
+{
+	CurrentBlue += BlueValue;
+	if (CurrentBlue > MaxBlue)
+	{
+		CurrentBlue = MaxBlue;
+	}
+}
+
