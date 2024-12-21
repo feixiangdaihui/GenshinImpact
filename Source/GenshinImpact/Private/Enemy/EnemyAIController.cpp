@@ -48,11 +48,24 @@ void AEnemyAIController::Tick(float DeltaTime)
 
 
 	// 更新状态变量
-	if (EnemyCharacter->DetectInterface)
+    if (EnemyCharacter->MoveInterface)
+    {
+        bIsMoving = EnemyCharacter->MoveInterface->GetIsMoving();
+        bIsChasing = EnemyCharacter->MoveInterface->GetIsChasing();
+        bIsResting = EnemyCharacter->MoveInterface->GetIsResting();
+    }
+    else
+        UE_LOG(LogTemp, Error, TEXT("MoveInterface not found in AIController!"));
+
+	if (EnemyCharacter->DetectInterface && !bIsResting)
     { 
 	    EnemyCharacter->DetectInterface->DetectPlayer();
 	    bCanDetectPlayer = EnemyCharacter->DetectInterface->GetCanDetectPlayer();
 	}
+    else if (bIsResting)
+    {
+		bCanDetectPlayer = false;
+    }
 	else
 		UE_LOG(LogTemp, Error, TEXT("DetectInterface not found in AIController!"));
 
@@ -69,26 +82,10 @@ void AEnemyAIController::Tick(float DeltaTime)
     else
 		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in AIController!"));
 
-    if (EnemyCharacter->MoveInterface)
-    {
-        bIsMoving = EnemyCharacter->MoveInterface->GetIsMoving();
-        bIsChasing = EnemyCharacter->MoveInterface->GetIsChasing();
-        bIsResting = EnemyCharacter->MoveInterface->GetIsResting();
-    }
-    else
-		UE_LOG(LogTemp, Error, TEXT("MoveInterface not found in AIController!"));
-
     // 行为决策逻辑
     if (bIsDead)
     {
-        // 如果敌人死亡，停止所有行为
-        EnemyCharacter->MoveInterface->Stop();/*
-		GetWorld()->GetTimerManager().SetTimer(
-            DestroyTimerHandle,
-			[this]() {EnemyCharacter->Destroy(); },
-			EnemyCharacter->DestroyTime,
-			false);*/
-		//UE_LOG(LogTemp, Warning, TEXT("Enemy is dead!"));
+        EnemyCharacter->MoveInterface->Stop();
     }
     else if (bIsBeingAttacked)
     {

@@ -19,8 +19,8 @@ public:
 	virtual void MoveTo(const FVector& Location, float AcceptRadius) override { return; };
 	virtual void MoveTo(const FVector& Location, float AcceptRadius, float Speed) { return; };
 	virtual void Patrol() override { return; };
-	virtual void ChasePlayer() override { return; };
-	virtual void TurnTo(const FVector& TargetLocation, float deltaTime) override { return; };
+	virtual void ChasePlayer() override;
+	virtual void TurnTo(const FVector& TargetLocation, float deltaTime) override;
 	virtual void Stop() override { return; };
 	virtual bool GetIsMoving() const override { return false; }
 	virtual bool GetIsChasing() const override { return false; }
@@ -43,6 +43,10 @@ protected:
 	// 休息时间
 	UPROPERTY(EditAnywhere, Category = "Move Settings")
 	float RestTime;
+
+	// 转身速度
+	UPROPERTY(EditAnywhere, Category = "Move Settings")
+	float TurnRate;
 
 	// 是否正在休息
 	bool bIsResting;
