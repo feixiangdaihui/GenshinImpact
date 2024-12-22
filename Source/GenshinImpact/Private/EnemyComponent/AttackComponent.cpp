@@ -49,6 +49,11 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 bool UAttackComponent::CanAttack(int AttackOpt) const
 {
+    if (AttackOpt < 0)
+        AttackOpt = 0;
+    else if (AttackOpt >= Attacks.Num())
+        AttackOpt = Attacks.Num() - 1;
+
     if (!TargetActor)
     {
         return false; // 没有目标不能攻击
@@ -96,6 +101,11 @@ bool UAttackComponent::CanAttack(int AttackOpt) const
 
 bool UAttackComponent::IsInRange(int AttackOpt) const
 {
+    if (AttackOpt < 0)
+        AttackOpt = 0;
+    else if (AttackOpt >= Attacks.Num())
+        AttackOpt = Attacks.Num() - 1;
+
 	if (!TargetActor)
 	{
 		return false; // 没有目标不能攻击
@@ -127,6 +137,11 @@ bool UAttackComponent::IsInRange(int AttackOpt) const
 
 bool UAttackComponent::GetIsAttacking(int AttackOpt) const
 {
+    if (AttackOpt < 0)
+        AttackOpt = 0;
+    else if (AttackOpt >= Attacks.Num())
+        AttackOpt = Attacks.Num() - 1;
+
 	if (AttackOpt == 0)
 	{
 		for (int i = 1; i < Attacks.Num(); i++)
@@ -140,6 +155,11 @@ bool UAttackComponent::GetIsAttacking(int AttackOpt) const
 
 void UAttackComponent::NormalAttack(int AttackOpt)
 {
+    if (AttackOpt < 0)
+        AttackOpt = 0;
+    else if (AttackOpt >= Attacks.Num())
+        AttackOpt = Attacks.Num() - 1;
+
     if (!CanAttack(AttackOpt))
     {
         UE_LOG(LogTemp, Warning, TEXT("Cannot attack target: %s"), TargetActor ? *TargetActor->GetName() : TEXT("Invalid Target"));

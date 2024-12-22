@@ -50,7 +50,7 @@ void UEquipmentBarComponent::WearEquipment(AEquipment* Equipment)
 			//取下原来的装备
 			TakeOffEquipment(Equipment->GetEquipmentType());
 			//把装备附在角色身上，并设置网格体不可见
-			
+			UE_LOG(LogTemp, Warning, TEXT("WearEquipment %d"), static_cast<int32>(Equipment->GetEquipmentType()));
 			Equipment->AttachToActor(PlayCharacter, FAttachmentTransformRules::SnapToTargetIncludingScale);
 			Equipment->SetIsHiden(true);
 			UE_LOG(LogTemp, Warning, TEXT("WearEquipment"));

@@ -61,4 +61,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCPP_InventoryComponent* InventoryComponent;
+
+	UFUNCTION()
+	bool CheckIsAllCharacterDead();
+
+	UFUNCTION()
+	void GameOver();
 };

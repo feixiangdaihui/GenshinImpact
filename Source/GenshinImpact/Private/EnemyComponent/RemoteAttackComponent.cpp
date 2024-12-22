@@ -5,7 +5,8 @@
 #include "Character/PlayCharacter.h"
 #include "PlayerController/SumPlayerController.h"
 #include "PlayerComponent/HealthComponent.h"
-
+#include "GlobalTypes/GlobalTypes.h"
+#include "Projectile/EnemyBallProjectile.h"
 URemoteAttackComponent::URemoteAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -89,7 +90,16 @@ void URemoteAttackComponent::NormalRemoteAttack(int AttackOpt)
 	bCanRemoteAttack = false;
 
 	FVector PlayerLocation = TargetActor->GetActorLocation();
-
+	// 投射子弹
+	if (BallProjectileClass)
+	{
+		FVector InitialLocation = GetOwner()->GetActorLocation();
+		FVector SpawnLocation = InitialLocation + GetOwner()->GetActorForwardVector() * 100.0f;
+		FRotator SpawnRotation = GetOwner()->GetActorRotation();
+		AEnemyBallProjectile* Projectile = GetWorld()->SpawnActor<AEnemyBallProjectile>(BallProjectileClass, SpawnLocation, SpawnRotation);
+		Projectile->SetDamage(RemoteAttackDamage);
+	
+	}
 	// 重置攻击状态
 	GetWorld()->GetTimerManager().SetTimer(
 		RemoteAttackEndTimerHandle,

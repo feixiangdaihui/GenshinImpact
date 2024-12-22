@@ -44,9 +44,15 @@ void ABaseHud::BeginPlay()
 				RealTimeWidgets.Add(Widget);
 				Widget->AddToViewport();
 			}
+
 		}
 	}
 	LoadEquipmentBarWidget();
+	if (Characters[CurrentCharacterIndex]->GetIsDead())
+	{
+		PlayerController->SeqChangeCharacter();
+	}
+	
 }
 
 void ABaseHud::Tick(float DeltaSeconds)
