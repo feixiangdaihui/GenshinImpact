@@ -28,7 +28,7 @@ void URemoteAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 }
 
-bool URemoteAttackComponent::CanRemoteAttack() const
+bool URemoteAttackComponent::CanRemoteAttack(int AttackOpt) const
 {
 	if (!TargetActor)
 	{
@@ -54,7 +54,7 @@ bool URemoteAttackComponent::CanRemoteAttack() const
 		return false;
 }
 
-bool URemoteAttackComponent::IsInRemoteRange() const
+bool URemoteAttackComponent::IsInRemoteRange(int AttackOpt) const
 {
 	if (!TargetActor)
 	{
@@ -76,9 +76,9 @@ bool URemoteAttackComponent::IsInRemoteRange() const
 		return false;
 }
 
-void URemoteAttackComponent::NormalRemoteAttack()
+void URemoteAttackComponent::NormalRemoteAttack(int AttackOpt)
 {
-	if (!CanAttack())
+	if (!CanAttack(AttackOpt))
 	{
 		return;
 	}

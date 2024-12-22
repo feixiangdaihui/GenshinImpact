@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Interface/AttackInterface.h"
+#include "GlobalTypes/GlobalTypes.h"
 #include "SkillAttackComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -16,80 +17,47 @@ public:
     USkillAttackComponent();
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    virtual void NormalAttack() override;
-    virtual void NormalRemoteAttack() override { return; };
+    virtual void NormalAttack(int AttackOpt) override;
+    virtual void NormalRemoteAttack(int AttackOpt) override { return; };
     virtual void SkillAttack(int SkillOpt) override;
-    virtual bool CanAttack() const override;
-	virtual bool CanRemoteAttack() const override { return false; };
-    virtual bool CanSkillAttack() const override;
-    virtual bool IsInRange() const override;
-	virtual bool IsInRemoteRange() const override { return false; };
-    virtual bool IsInSkillRange() const override;
-    virtual bool GetIsAttacking() const override { return bIsAttacking; }
-    virtual bool GetIsSkillAttacking() const override { return bIsSkillAttacking; }
+    virtual bool CanAttack(int AttackOpt) const override;
+	virtual bool CanRemoteAttack(int AttackOpt) const override { return false; };
+    virtual bool CanSkillAttack(int SkillOpt) const override;
+    virtual bool IsInRange(int AttackOpt) const override;
+	virtual bool IsInRemoteRange(int AttackOpt) const override { return false; };
+    virtual bool IsInSkillRange(int SkillOpt) const override;
+    virtual bool GetIsAttacking(int AttackOpt) const override;
+    virtual bool GetIsSkillAttacking(int SkillOpt) const override;
+
+    UFUNCTION(BlueprintCallable)
+    void AddAttack(FString Name, float CD, float Range, float Damage, float AnimDuration) { Attacks.Add(FAttack(Name, CD, Range, Damage, AnimDuration)); };
+
+    UFUNCTION(BlueprintCallable)
+    void AddSkill(FString Name, float CD, float Range, float Damage, float AnimDuration) { Skills.Add(FSkill(Name, CD, Range, Damage, AnimDuration)); };
+
+    UFUNCTION(BlueprintCallable)
+    TArray<FSkill> GetSkills() const { return Skills; }
+
+    UFUNCTION(BlueprintCallable)
+    TArray<FAttack> GetAttacks() const { return Attacks; }
 
 protected:
     virtual void BeginPlay() override;
 
-    // 攻击冷却时间
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackCooldown;
-
-    // 技能冷却时间
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float SkillCooldown;
-
-    // 攻击范围
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackRange;
-
-    // 技能范围
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float SkillAttackRange;
-
-    // 攻击伤害
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackDamage;
-
-    // 技能伤害
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float SkillDamage;
-
-    // 攻击动画时长
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackAnimationDuration;
-
-    // 技能动画时长
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float SkillAnimationDuration;
-
     // 攻击对象
     AActor* TargetActor;
-
-    // 是否可以攻击
-    bool bCanAttack;
-
-    // 是否可以技能攻击
-    bool bCanSkillAttack;
-
-    // 重置攻击状态
-    void ResetAttackCooldown() { bCanAttack = true; };
-
-    // 重置技能攻击状态
-    void ResetSkillCooldown() { bCanSkillAttack = true; };
-
-    // 攻击冷却计时器句柄
-    FTimerHandle AttackCooldownTimerHandle;
-
-    // 技能冷却计时器句柄
-    FTimerHandle SkillCooldownTimerHandle;
 
     // 攻击动画计时器句柄
     FTimerHandle AttackEndTimerHandle;
 
-    // 是否正在攻击
-    bool bIsAttacking;
+    // 技能动画计时器句柄
+	FTimerHandle SkillEndTimerHandle;
 
-    // 是否正在释放技能
-    bool bIsSkillAttacking;
+    // 攻击数组
+	UPROPERTY(EditAnywhere, Category = "Attack Settings")
+    TArray<FAttack> Attacks;
+
+    // 技能数组
+    UPROPERTY(EditAnywhere, Category = "Skill Settings")
+    TArray<FSkill> Skills;
 };

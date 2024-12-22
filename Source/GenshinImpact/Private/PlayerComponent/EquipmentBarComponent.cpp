@@ -7,7 +7,9 @@
 #include "PlayerComponent/HealthComponent.h"
 #include "PlayerComponent/AttackPowerComponent.h"
 #include "PlayerComponent/ElementComponent.h"
-
+#include "Item/Equipment/Equipment.h"
+#include "Widget/EquipmentBarWidget.h"
+#include "Hud/BaseHud.h"
 // Sets default values for this component's properties
 UEquipmentBarComponent::UEquipmentBarComponent()
 {
@@ -15,6 +17,7 @@ UEquipmentBarComponent::UEquipmentBarComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 	EquipmentBar.SetNum(static_cast<int32>(EEquipmentType_MAX));
+	
 	// ...
 }
 
@@ -23,7 +26,7 @@ UEquipmentBarComponent::UEquipmentBarComponent()
 void UEquipmentBarComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	BaseHud = Cast<ABaseHud>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	// ...
 	
 }
@@ -40,51 +43,82 @@ void UEquipmentBarComponent::WearEquipment(AEquipment* Equipment)
 {
 	if (Equipment)
 	{
-		if (EquipmentBar[static_cast<int32>(Equipment->GetEquipmentType())] != nullptr)
+		
+		APlayCharacter* PlayCharacter = Cast<APlayCharacter>(GetOwner());
+		if (PlayCharacter)
 		{
-			//放入背包
-			UE_LOG(LogTemp, Warning, TEXT("EquipmentBarComponent: WearEquipment: %s"), *Equipment->GetName());
+			//取下原来的装备
+			TakeOffEquipment(Equipment->GetEquipmentType());
+			//把装备附在角色身上，并设置网格体不可见
+			
+			Equipment->AttachToActor(PlayCharacter, FAttachmentTransformRules::SnapToTargetIncludingScale);
+			Equipment->SetIsHiden(true);
+			UE_LOG(LogTemp, Warning, TEXT("WearEquipment"));
+			//穿上新的装备
+			EquipmentBar[static_cast<int32>(Equipment->GetEquipmentType())] = Equipment;
+			//更新属性
+			PlayCharacter->HealthComponent->AddMaxHealth(Equipment->GetHealthPower());
+			PlayCharacter->AttackPowerComponent->AddAttackPower(Equipment->GetAttackPower());
+			PlayCharacter->ElementComponent->AddElementPower(Equipment->GetElementPower());
+			//更新UI
+			if (BaseHud)
+				BaseHud->AddEquipmentBarWidget(PlayCharacter->GetCharacterIndex(), static_cast<int32>(Equipment->GetEquipmentType()), Equipment->GetTexture());
 		}
-		EquipmentBar[static_cast<int32>(Equipment->GetEquipmentType())] = Equipment;
 	}
 	
 }
 
 
-void UEquipmentBarComponent::TakeOffEquipment(EEquipmentType& EquipmentType)
+void UEquipmentBarComponent::TakeOffEquipment(EEquipmentType EquipmentType)
 {
 	if (EquipmentBar[static_cast<int32>(EquipmentType)] != nullptr)
 	{
-		//放入背包
-		UE_LOG(LogTemp, Warning, TEXT("EquipmentBarComponent: TakeOffEquipment: %s"), *EquipmentBar[static_cast<int32>(EquipmentType)]->GetName());
-		EquipmentBar[static_cast<int32>(EquipmentType)] = nullptr;
+		APlayCharacter* PlayCharacter = Cast<APlayCharacter>(GetOwner());
+		if (PlayCharacter)
+		{
+			//取下装备
+			AEquipment* Equipment = EquipmentBar[static_cast<int32>(EquipmentType)];
+			EquipmentBar[static_cast<int32>(EquipmentType)] = nullptr;
+			//更新属性
+			PlayCharacter->HealthComponent->MinusMaxHealth(Equipment->GetHealthPower());
+			PlayCharacter->AttackPowerComponent->MinusAttackPower(Equipment->GetAttackPower());
+			PlayCharacter->ElementComponent->MinusElementPower(Equipment->GetElementPower());
+			//把装备扔在地上
+			//detach,保持原来的大小形状
+			Equipment->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			Equipment->SetActorLocation(PlayCharacter->GetActorLocation() + FVector(0, 0, -90));
+
+			Equipment->InitializeData();
+			Equipment->SetIsHiden(false);
+			//更新UI
+			if (BaseHud)
+				BaseHud->RemoveEquipmentBarWidget(PlayCharacter->GetCharacterIndex(), static_cast<int32>(EquipmentType));
+		}
+
 	}
 }
 
-void UEquipmentBarComponent::UpdateAttribute()
+void UEquipmentBarComponent::GetEquipmentBarTextureArray(TArray<TObjectPtr<UTexture2D>>& TextureArray)
 {
-	ASumPlayerController* PlayerController = Cast<ASumPlayerController>(GetWorld()->GetFirstPlayerController());
-	if (PlayerController)
+	TextureArray.SetNum(static_cast<int32>(EEquipmentType_MAX));
+	for (int32 i = 0; i < static_cast<int32>(EEquipmentType_MAX); i++)
 	{
-		APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(PlayerController->GetCharacter());
-		if (PlayerCharacter)
+		if (EquipmentBar[i])
 		{
-			float NewMaxHealth = 0.0f, NewElementPower = 0.0f, NewAttackPower = 0.0f;
-			for (auto Equipment : PlayerCharacter->EquipmentBarComponent->EquipmentBar)
-			{
-				if (Equipment)
-				{
-					NewMaxHealth += Equipment->HealthPower;
-					NewElementPower += Equipment->ElementPower;
-					NewAttackPower += Equipment->AttackPower;
-				}
-			}
-			PlayerCharacter->HealthComponent->UpdateMaxHealthByAdd(NewMaxHealth);
-			PlayerCharacter->ElementComponent->UpdateSumElementPowerByAdd(NewElementPower);
-			PlayerCharacter->AttackPowerComponent->UpdateSumAttackPowerByAdd(NewAttackPower);
+			TextureArray[i] = EquipmentBar[i]->GetTexture();
+		}
+		else
+		{
+			TextureArray[i] = nullptr;
 		}
 	}
 }
+
+
+
+
+
+
 
 
 

@@ -46,6 +46,15 @@ void UBlueComponent::AddBlue(float BlueValue)
 	}
 }
 
+void UBlueComponent::AddBlueByRate(float Rate)
+{
+	CurrentBlue += Rate * MaxBlue;
+	if (CurrentBlue > MaxBlue)
+	{
+		CurrentBlue = MaxBlue;
+	}
+}
+
 bool UBlueComponent::ReduceBlue(float BlueValue)
 {
 	if (CurrentBlue >= BlueValue)
@@ -54,5 +63,14 @@ bool UBlueComponent::ReduceBlue(float BlueValue)
 		return true;
 	}
 	return false;
+}
+
+void UBlueComponent::RecoverBlueByValue(float BlueValue)
+{
+	CurrentBlue += BlueValue;
+	if (CurrentBlue > MaxBlue)
+	{
+		CurrentBlue = MaxBlue;
+	}
 }
 

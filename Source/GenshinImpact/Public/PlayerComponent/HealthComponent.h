@@ -15,27 +15,42 @@ class GENSHINIMPACT_API UHealthComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float BaseHealth = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float MaxHealth = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float CurrentHealth = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float RemainHealthRate = 1.0f;
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void DamageHealthByValue(float DamageValue);
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void DamageHealthByRate(float DamageRate);
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void RecoverHealthByValue(float RecoverValue);
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void RecoverHealthByRate(float DamageRate);
 
-
-protected:
+private:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float BaseHealth = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float MaxHealth = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float RemainHealthRate = 1.0f;
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void SetMaxHealth(float NewMaxHealth);
-	void UpdateMaxHealthByAdd(float HealthToAdd) { MaxHealth = HealthToAdd + BaseHealth; }
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetMaxHealth() { return MaxHealth; }
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetCurrentHealth() { return CurrentHealth; }
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void AddMaxHealth(float HealthToAdd);
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void MinusMaxHealth(float HealthToMinus);
+
+	void InitializeHealthComponent(float InitHealth) { CurrentHealth = InitHealth; }
+
 
 		
 };

@@ -18,7 +18,6 @@ class GENSHINIMPACT_API IEnemyHealthInterface
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void TakeDamageByValue(float DamageAmount, float TimeToBeAttacked = 0.5f) = 0;
 	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) = 0;
@@ -27,11 +26,14 @@ public:
 	virtual float GetMaxHealth() const = 0;
 	virtual float GetCurrentHealth() const = 0;
 	virtual float GetCurrentHealthPercent() const = 0;
+	virtual float GetCurrentShieldPercent() const = 0;
 	virtual GElement GetElementType() const = 0;
 	virtual float GetLevel() const = 0;
+	virtual void ConveyExperience() const = 0;
 
 protected:
 	virtual void Heal() = 0;
+	virtual void RestoreShield() = 0;
 	virtual void Die() = 0;
 	virtual void ResetBeAttacked() = 0;
 };

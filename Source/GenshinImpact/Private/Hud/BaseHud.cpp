@@ -8,6 +8,7 @@
 #include"PlayerComponent/HealthComponent.h"
 #include"PlayerController/SumPlayerController.h"
 #include"PlayerComponent/BlueComponent.h"
+#include"Widget/EquipmentBarWidget.h"
 ABaseHud::ABaseHud()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,9 +19,20 @@ void ABaseHud::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerController = Cast<ASumPlayerController>(GetOwningPlayerController());
+	CurrentCharacterIndex = PlayerController->GetCurrentCharacterIndex();
 	if (PlayerController)
 	{
 		Characters = PlayerController->Characters;
+	}
+	if (EquipmentBarWidgetClass)
+	{
+		for (int i = 0; i < Characters.Num(); i++)
+		{
+			TObjectPtr<UEquipmentBarWidget> NewEquipmentBarWidget = CreateWidget<UEquipmentBarWidget>(GetWorld(), EquipmentBarWidgetClass);
+			EquipmentBarWidget.Add(NewEquipmentBarWidget);
+			NewEquipmentBarWidget->DefaultInitializeEquipmentBar();
+		}
+		EquipmentBarWidget[CurrentCharacterIndex]->AddToViewport();
 	}
 	for (int i = 0; i < RealTimeWidgetClasses.Num(); i++)
 	{
@@ -34,6 +46,7 @@ void ABaseHud::BeginPlay()
 			}
 		}
 	}
+	LoadEquipmentBarWidget();
 }
 
 void ABaseHud::Tick(float DeltaSeconds)
@@ -53,8 +66,61 @@ void ABaseHud::UpdateRealTimeWidget()
 		{
 			if (RealTimeWidgets[i])
 			{
-				RealTimeWidgets[i]->UpdateWidget(Characters[i]->HealthComponent->MaxHealth, Characters[i]->HealthComponent->CurrentHealth, Characters[i]->BlueComponent->MaxBlue, Characters[i]->BlueComponent->CurrentBlue);
+				RealTimeWidgets[i]->UpdateWidget(Characters[i]->HealthComponent->GetMaxHealth(), Characters[i]->HealthComponent->GetCurrentHealth(), Characters[i]->BlueComponent->GetMaxBlue(), Characters[i]->BlueComponent->GetCurrentBlue());
 			}
 		}
 	}
 }
+
+void ABaseHud::AddEquipmentBarWidget(int32 CharacterIndex, int32 index, UTexture2D* Texture)
+{
+	if (EquipmentBarWidget.IsValidIndex(CharacterIndex) && EquipmentBarWidget[CharacterIndex])
+	{
+		EquipmentBarWidget[CharacterIndex]->UpdateEquipmentBar(index, Texture);
+	}
+}
+
+void ABaseHud::RemoveEquipmentBarWidget(int32 CharacterIndex, int32 index)
+{
+	if (EquipmentBarWidget.IsValidIndex(CharacterIndex) && EquipmentBarWidget[CharacterIndex])
+	{
+		EquipmentBarWidget[CharacterIndex]->TakeOffEquipment(index);
+	}
+}
+
+void ABaseHud::ChangeCharacterUI()
+{
+	if (EquipmentBarWidget.IsValidIndex(CurrentCharacterIndex))
+	{
+		EquipmentBarWidget[CurrentCharacterIndex]->RemoveFromParent();
+	}
+	CurrentCharacterIndex = PlayerController->GetCurrentCharacterIndex();
+	if (EquipmentBarWidget.IsValidIndex(CurrentCharacterIndex))
+	{
+		EquipmentBarWidget[CurrentCharacterIndex]->AddToViewport();
+	}
+}
+
+void ABaseHud::LoadEquipmentBarWidget()
+{
+	for (auto NewCharater : Characters)
+	{
+		if (NewCharater)
+		{
+			TArray<TObjectPtr<UTexture2D>> TextureArray;
+			NewCharater->EquipmentBarComponent->GetEquipmentBarTextureArray(TextureArray);
+			for (int i = 0; i < TextureArray.Num(); i++)
+			{
+				if (TextureArray[i])
+				{
+					AddEquipmentBarWidget(NewCharater->GetCharacterIndex(), i, TextureArray[i]);
+				}
+			}
+		}
+	}
+}
+
+
+
+
+

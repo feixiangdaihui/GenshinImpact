@@ -6,15 +6,34 @@
 #include "Character/PlayCharacter.h"
 #include"GameSave/MyGameInstance.h"
 
+
 void ASumPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	InitializeCharacterMessageAtBeginPlay();
 	LoadCharacterData();
-	Hud = Cast<ABaseHud>(GetHUD());
 
 
+	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
+	if (PlayerCharacter)
+	{
+		UCPP_InventoryComponent* FoundInventoryComponent = PlayerCharacter->FindComponentByClass<UCPP_InventoryComponent>();
+		if (FoundInventoryComponent)
+		{
+			InventoryComponent = FoundInventoryComponent;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("InventoryComponent not found on PlayerCharacter."));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerPawn is not a valid ACharacter."));
+	}
 }
+
 
 void ASumPlayerController::Tick(float DeltaTime)
 {
@@ -35,6 +54,7 @@ void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 {
 	APlayCharacter* FirstCharacter = Cast<APlayCharacter>(GetPawn());
 	Characters.Add(FirstCharacter);
+	FirstCharacter->SetCharacterIndex(0);
 	CurrentCharacterIndex = 0;
 	FVector CurrentCharacterLocation = FirstCharacter->GetActorLocation();
 	FRotator CurrentCharacterRotation = FirstCharacter->GetActorRotation();
@@ -47,8 +67,10 @@ void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 			APlayCharacter* NewCharacter = GetWorld()->SpawnActor<APlayCharacter>(CharacterClasses[i], CurrentCharacterLocation, CurrentCharacterRotation, SpawnParameters);
 			Characters.Add(NewCharacter);
 			SetCharacterVisibility(i, false);
+			NewCharacter->SetCharacterIndex(i);
 		}
 	}
+	LoadCharacterData();
 
 }
 
@@ -60,11 +82,15 @@ void ASumPlayerController::ChangeCharacter(int CharacterIndex)
 		//隐藏当前角色
 		SetCharacterVisibility(CurrentCharacterIndex, false);
 		SetCharacterVisibility(CharacterIndex, true);
+		
 		CurrentCharacterIndex = CharacterIndex;
 
 		OnPossess(Characters[CharacterIndex]);
-
-
+		ABaseHud* BaseHud = Cast<ABaseHud>(GetHUD());
+		if (BaseHud)
+		{
+			BaseHud->ChangeCharacterUI();
+		}
 	}
 
 }
@@ -125,7 +151,33 @@ void ASumPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	SaveCharacterData();
 }
 
+void ASumPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		// 绑定 ToggleInventoryAction 到 ToggleInventoryWidget
+		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Triggered, this, &ASumPlayerController::ToggleInventory);
+	}
+}
 
 
-
+void ASumPlayerController::ToggleInventory()
+{
+	if (InventoryComponent)
+	{
+		// 使用反射调用蓝图函数
+		FName FunctionName = FName("ToggleInventoryWidget");
+		UFunction* Function = InventoryComponent->FindFunction(FunctionName);
+		if (Function)
+		{
+			InventoryComponent->ProcessEvent(Function, nullptr);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Function %s not found in InventoryComponent."), *FunctionName.ToString());
+		}
+	}
+}
 

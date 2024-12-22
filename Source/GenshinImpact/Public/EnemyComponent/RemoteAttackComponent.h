@@ -18,17 +18,17 @@ public:
     URemoteAttackComponent();
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    virtual void NormalAttack() override { return; };
-    virtual void NormalRemoteAttack() override;
+    virtual void NormalAttack(int AttackOpt) override { return; };
+    virtual void NormalRemoteAttack(int AttackOpt) override;
     virtual void SkillAttack(int SkillOpt) override { return; };
-    virtual bool CanAttack() const override { return false; }
-	virtual bool CanRemoteAttack() const override;
-    virtual bool CanSkillAttack() const override { return false; }
-    virtual bool IsInRange() const override { return false; };
-	virtual bool IsInRemoteRange() const override;
-    virtual bool IsInSkillRange() const override { return false; }
-    virtual bool GetIsAttacking() const override { return bIsRemoteAttacking; }
-    virtual bool GetIsSkillAttacking() const override { return false; }
+    virtual bool CanAttack(int AttackOpt) const override { return false; }
+	virtual bool CanRemoteAttack(int AttackOpt) const override;
+    virtual bool CanSkillAttack(int SkillOpt) const override { return false; }
+    virtual bool IsInRange(int AttackOpt) const override { return false; };
+	virtual bool IsInRemoteRange(int AttackOpt) const override;
+    virtual bool IsInSkillRange(int SkillOpt) const override { return false; }
+    virtual bool GetIsAttacking(int AttackOpt) const override { return bIsRemoteAttacking; }
+    virtual bool GetIsSkillAttacking(int SkillOpt) const override { return false; }
 
 protected:
     // Called when the game starts

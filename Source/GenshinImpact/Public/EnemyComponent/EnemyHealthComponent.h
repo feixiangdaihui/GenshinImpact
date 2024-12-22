@@ -22,6 +22,7 @@ protected:
 
 	virtual void Die() override;
 	virtual void Heal() override;
+	virtual void RestoreShield() override { return; };
 	virtual void ResetBeAttacked() override { bIsBeingAttacked = false; }
 
 	// 最大生命值
@@ -52,8 +53,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Health Settings")
 	GElement ElementType;
 
-	// 受击状态计时器
+	// 脱战回血时间
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float TimeNeededToHeal;
+
+	//记录脱战时间
+	float TimeSinceLastAttacked;
+
 	FTimerHandle BeAttackedStateTimerHandle;
+
+	// 掉落经验
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float Experience;
+
+	// 掉落装备
+	/*UPROPERTY(EditAnywhere, Category = "Health Settings")
+	Equipments;*/
 
 public:	
 	// Called every frame
@@ -62,12 +77,15 @@ public:
 	virtual void TakeDamageByValue(float DamageAmount, float TimeToBeAttacked = 0.5f) override;
 	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) override;
 	virtual bool GetIsBeingAttacked() const override { return bIsBeingAttacked; }
+	UFUNCTION(BlueprintCallable)
 	virtual bool GetIsDead() const override { return bIsDead; }
 	UFUNCTION(BlueprintCallable)
 	virtual float GetMaxHealth() const override { return MaxHealth; }
 	virtual float GetCurrentHealth() const override { return CurrentHealth; }
 	UFUNCTION(BlueprintCallable)
 	virtual float GetCurrentHealthPercent() const override { return CurrentHealth / MaxHealth; }
+	virtual float GetCurrentShieldPercent() const override { return 0.0f; }
 	virtual GElement GetElementType() const override { return ElementType; }
 	virtual float GetLevel() const override { return Level; }
+	virtual void ConveyExperience() const override;
 };

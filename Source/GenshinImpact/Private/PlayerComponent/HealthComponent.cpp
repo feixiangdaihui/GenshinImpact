@@ -47,6 +47,29 @@ void UHealthComponent::DamageHealthByRate(float DamageRate)
 	}
 }
 
+void UHealthComponent::RecoverHealthByValue(float RecoverValue)
+{
+	CurrentHealth += RecoverValue;
+	RemainHealthRate = CurrentHealth / MaxHealth;
+	if (CurrentHealth >= MaxHealth)
+	{
+		CurrentHealth = MaxHealth;
+		RemainHealthRate = 1.0f;
+	}
+}
+
+void UHealthComponent::RecoverHealthByRate(float DamageRate)
+{
+	CurrentHealth += MaxHealth * DamageRate;
+	RemainHealthRate = CurrentHealth / MaxHealth;
+	if (CurrentHealth >= MaxHealth)
+	{
+		CurrentHealth = MaxHealth;
+		RemainHealthRate = 1.0f;
+	}
+}
+
+
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {
@@ -67,6 +90,20 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::SetMaxHealth(float NewMaxHealth)
 {
 	MaxHealth = NewMaxHealth;
+}
+
+void UHealthComponent::AddMaxHealth(float HealthToAdd)
+{
+	MaxHealth += HealthToAdd;
+}
+
+void UHealthComponent::MinusMaxHealth(float HealthToMinus)
+{
+	MaxHealth -= HealthToMinus;
+	if (CurrentHealth > MaxHealth)
+	{
+		CurrentHealth = MaxHealth;
+	}
 }
 
 

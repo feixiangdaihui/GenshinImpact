@@ -24,7 +24,7 @@ UCLASS()
 class GENSHINIMPACT_API APlayCharacter : public AGenshinImpactCharacter, public IHealthInterface
 {
     GENERATED_BODY()
-
+	friend class UPlayCharacterAnimation;
 public:
 
     APlayCharacter();
@@ -32,8 +32,8 @@ public:
     virtual void BeginPlay() override;
 protected:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-public:
+	
+	int CharacterIndex;
 	//处理输入
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* CastSpellAction;
@@ -41,6 +41,8 @@ public:
 	UInputAction* NormalAttackAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* ChangeCharacterAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* WearEquipmentAction;
 
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
@@ -48,7 +50,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
     float Speed;
 	virtual void Move(const FInputActionValue& Value);
-
+public:
 	//组件
     //血量
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
@@ -85,11 +87,18 @@ public:
 	TObjectPtr<ULevelComponent> LevelComponent;
 	inline int GetLevel() const;
 
+	UFUNCTION(BlueprintCallable)
+	int GetCharacterIndex() const { return CharacterIndex; }
+	UFUNCTION(BlueprintCallable)
+	void SetCharacterIndex(int Index) { CharacterIndex = Index; }
+protected:
 	//攻击与技能的输入处理
 	virtual void CastSpell();
 	virtual void CastSpellEnd();
 	virtual void NormalAttack();
 	virtual void NormalAttackEnd();
+	//捡起装备
+	virtual void WearEquipment();
 
 	//普通攻击倍率
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttackMode")
@@ -116,10 +125,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AttackMode")
 	bool IsJudgeNormalAttack;
 
-
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PickUp")
+	float PickUpDistance;
+public:
+	//保存游戏相关
 	void LoadCharacterData(FCharacterData& );
 	FCharacterData SaveCharacterData();
 private:
+	//切换角色
 	void SeqChangeCharacter();
 };
