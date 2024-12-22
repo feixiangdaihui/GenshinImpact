@@ -8,7 +8,7 @@
 
 USkillAttackComponent::USkillAttackComponent()
 {
-    PrimaryComponentTick.bCanEverTick = false;
+    PrimaryComponentTick.bCanEverTick = true;
 }
 
 void USkillAttackComponent::BeginPlay()
@@ -46,44 +46,6 @@ void USkillAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 			}
 		}
 	}
-}
-
-bool USkillAttackComponent::CanAttack(int AttackOpt) const
-{
-    if (!TargetActor)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Cannot attack: No target actor!"));
-        return false; // 没有目标不能攻击
-    }
-
-    AActor* Owner = GetOwner();
-    if (!Owner)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Cannot attack: No owner!"));
-        return false; // 组件没有绑定到宿主
-    }
-
-    FVector OwnerLocation = Owner->GetActorLocation();
-    FVector OwnerForward = Owner->GetActorForwardVector();
-    FVector TargetLocation = TargetActor->GetActorLocation();
-
-    // 计算与目标的距离
-    float DistanceToTarget = FVector::Dist(OwnerLocation, TargetLocation);
-
-    if (AttackOpt == 0)
-    {
-        for (int i = 1; i < Attacks.Num(); i++)
-        {
-            if (Attacks[i].Range >= DistanceToTarget && Attacks[i].bCanUse && !Attacks[i].bIsUsing)
-                return true;
-        }
-        return false;
-    }
-
-	if (Attacks[AttackOpt].Range >= DistanceToTarget && Attacks[AttackOpt].bCanUse && !Attacks[AttackOpt].bIsUsing)
-		return true;
-	else
-		return false;
 }
 
 bool USkillAttackComponent::CanSkillAttack(int SkillOpt) const
@@ -124,42 +86,13 @@ bool USkillAttackComponent::CanSkillAttack(int SkillOpt) const
 		return false;
 }
 
-void USkillAttackComponent::NormalAttack(int AttackOpt)
-{
-    if (!CanAttack(AttackOpt))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Cannot attack target: %s"), TargetActor ? *TargetActor->GetName() : TEXT("Invalid Target"));
-        return;
-    }
-
-    if(AttackOpt == 0)
-	{
-        for (int i = 1; i < Attacks.Num(); i++)
-            if (CanAttack(i))
-                AttackOpt = i;
-	}
-
-    Attacks[AttackOpt].bIsUsing = true;
-
-    GetWorld()->GetTimerManager().SetTimer(
-        AttackEndTimerHandle, // 使用计时器句柄
-        [this, AttackOpt]()
-        {
-            APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
-            if (PlayerCharacter)
-                PlayerCharacter->HealthComponent->DamageHealthByValue(Attacks[AttackOpt].Damage); // 延迟伤害
-            Attacks[AttackOpt].bIsUsing = false;
-        },
-        Attacks[AttackOpt].AnimationDuration,
-        false
-    );
-
-    // 攻击完成后进入冷却
-    Attacks[AttackOpt].bCanUse = false;
-}
-
 void USkillAttackComponent::SkillAttack(int SkillOpt)
 {
+    if (SkillOpt < 0)
+        SkillOpt = 0;
+    else if(SkillOpt >= Skills.Num())
+		SkillOpt = Skills.Num() - 1;
+
 	if (!CanAttack(SkillOpt))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Cannot skill attack target: %s"), TargetActor ? *TargetActor->GetName() : TEXT("Invalid Target"));
@@ -179,7 +112,7 @@ void USkillAttackComponent::SkillAttack(int SkillOpt)
         [this, SkillOpt]()
         {
             APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
-            if (PlayerCharacter)
+            if (PlayerCharacter && CanSkillAttack(SkillOpt))
                 PlayerCharacter->HealthComponent->DamageHealthByValue(Skills[SkillOpt].Damage); // 延迟伤害
             Skills[SkillOpt].bIsUsing = false;
         },
@@ -190,35 +123,14 @@ void USkillAttackComponent::SkillAttack(int SkillOpt)
     Skills[SkillOpt].bCanUse = false;
 }
 
-bool USkillAttackComponent::IsInRange(int AttackOpt) const
-{
-    if (!TargetActor)
-    {
-        return false; // 没有目标不能攻击
-    }
-    AActor* Owner = GetOwner();
-    if (!Owner)
-    {
-        return false; // 组件没有绑定到宿主
-    }
-    // 计算与目标的距离
-    float DistanceToTarget = FVector::Dist(Owner->GetActorLocation(), TargetActor->GetActorLocation());
-
-	if (AttackOpt == 0)
-	{
-		for (int i = 1; i < Attacks.Num(); i++)
-		{
-			if (Attacks[i].Range >= DistanceToTarget)
-				return true;
-		}
-		return false;
-	}
-
-	return Attacks[AttackOpt].Range >= DistanceToTarget;
-}
 
 bool USkillAttackComponent::IsInSkillRange(int SkillOpt) const
 {
+    if (SkillOpt < 0)
+        SkillOpt = 0;
+    else if (SkillOpt >= Skills.Num())
+        SkillOpt = Skills.Num() - 1;
+
     if (!TargetActor)
     {
         return false; // 没有目标不能攻击
@@ -246,6 +158,11 @@ bool USkillAttackComponent::IsInSkillRange(int SkillOpt) const
 
 bool USkillAttackComponent::GetIsSkillAttacking(int SkillOpt) const
 {
+    if (SkillOpt < 0)
+        SkillOpt = 0;
+    else if (SkillOpt >= Skills.Num())
+        SkillOpt = Skills.Num() - 1;
+
     if (SkillOpt == 0)
     {
         for (int i = 1; i < Skills.Num(); i++)
@@ -257,18 +174,4 @@ bool USkillAttackComponent::GetIsSkillAttacking(int SkillOpt) const
     }
 
     return Skills[SkillOpt].bIsUsing;
-}
-
-bool USkillAttackComponent::GetIsAttacking(int AttackOpt) const
-{
-	if (AttackOpt == 0)
-	{
-		for (int i = 1; i < Attacks.Num(); i++)
-		{
-			if (Attacks[i].bIsUsing)
-				return true;
-		}
-		return false;
-	}
-	return Attacks[AttackOpt].bIsUsing;
 }
