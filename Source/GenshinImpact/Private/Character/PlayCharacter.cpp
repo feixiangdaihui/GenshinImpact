@@ -66,8 +66,8 @@ void APlayCharacter::TakeDamageByValue_Implementation()
 }
 void APlayCharacter::Die_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Character Die"));
-	//退出游戏
+	IsDead = true;
+	SeqChangeCharacter();
 	
 }
 void APlayCharacter::RecoverBlueByTick()
@@ -161,7 +161,9 @@ void APlayCharacter::LoadCharacterData(FCharacterData& InitData)
 {
 	
 	HealthComponent->InitializeHealthComponent(InitData.CurrentHealth);
-	BlueComponent->InitializeBlueComponent(InitData.CurrentBlue);
+	if (InitData.CurrentHealth <= 0)
+		IsDead = true;
+	BlueComponent->InitializeBlueComponent(InitData.CurrentBlue); 
 	LevelComponent->InitializeLevelComponent(InitData.CurrentLevel, InitData.CurrentExperience);
 	for (int i = 0; i < InitData.EquipmentBarClass.Num(); i++)
 	{
@@ -193,6 +195,7 @@ FCharacterData  APlayCharacter::SaveCharacterData()
 {
 	FCharacterData CharacterData;
 	CharacterData.CurrentHealth = HealthComponent->GetCurrentHealth();
+
 	CharacterData.CurrentBlue = BlueComponent->GetCurrentBlue();
 	CharacterData.CurrentExperience = LevelComponent->GetCurrentExperience();
 	CharacterData.CurrentLevel = LevelComponent->GetCurrentLevel();
