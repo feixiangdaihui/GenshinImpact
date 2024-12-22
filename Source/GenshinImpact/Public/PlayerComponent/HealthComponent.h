@@ -49,7 +49,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void MinusMaxHealth(float HealthToMinus);
 
-	void InitializeHealthComponent(float InitHealth) { CurrentHealth = InitHealth; }
+	void InitializeHealthComponent(float InitHealth);
+
 
 
 		

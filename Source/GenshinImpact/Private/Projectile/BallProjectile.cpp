@@ -41,7 +41,6 @@ void ABallProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(OtherActor);
 		if (Enemy)
 		{
-
 			GElement EnemyElementType = Enemy->GetElementType();
 			GElement CharacterElementType = Player->GetElementType();
 			int EnemyLevel = Enemy->GetLevel();
@@ -50,7 +49,6 @@ void ABallProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 			UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), ActualDamage);
 			Enemy->TakeDamageByValue(ActualDamage);
 		}
-		Destroy();
 	}
 	Destroy();
 }

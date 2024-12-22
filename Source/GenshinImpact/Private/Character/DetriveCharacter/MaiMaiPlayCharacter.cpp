@@ -47,6 +47,7 @@ void AMaiMaiPlayCharacter::SpawnNormalAttack()
 {
 	//直线发射，限制距离，距离一到自动销毁
 //
+	UE_LOG(LogTemp, Warning, TEXT("NormalAttack"));
 	FVector InitialLocation = NormalAttackProjectileComponent->GetComponentLocation();
 	FVector SpawnLocation = InitialLocation + GetActorForwardVector() * 100.0f;
 	FRotator SpawnRotation = GetActorRotation();

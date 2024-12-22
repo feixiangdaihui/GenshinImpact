@@ -108,7 +108,6 @@ void AEnemyAIController::Tick(float DeltaTime)
         if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
-			UE_LOG(LogTemp, Warning, TEXT("AI:Enemy is attacking!"));
         }
         else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
         {

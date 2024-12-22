@@ -25,6 +25,14 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     bool bIsAttacking;
 
+    //是否正在使用攻击技能
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+	bool bIsSkillAttacking;
+
+    //是否正在使用恢复技能
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+    bool bIsUsingHealthSkill;
+
     // 是否正在被攻击
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     bool bIsBeingAttacked;
