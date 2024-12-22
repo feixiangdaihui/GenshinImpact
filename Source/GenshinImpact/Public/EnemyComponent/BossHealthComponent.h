@@ -1,28 +1,41 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interface/EnemyHealthInterface.h"
+#include "GlobalTypes/GlobalTypes.h"
+#include "EnemyComponent/EnemyHealthComponent.h"
 #include "BossHealthComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GENSHINIMPACT_API UBossHealthComponent : public UActorComponent
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class GENSHINIMPACT_API UBossHealthComponent : public UEnemyHealthComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UBossHealthComponent();
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	virtual void RestoreShield() override;
 
-public:	
-	// Called every frame
+	// 最大护盾值
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float MaxShield;
+
+	// 当前护盾值
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float CurrentShield;
+
+	// 护盾回复量
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float ShieldHealAmount;
+
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	virtual void TakeDamageByValue(float DamageAmount, float TimeToBeAttacked = 0.5f) override;
+	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) override;
+	virtual float GetCurrentShieldPercent() const override { return CurrentShield / MaxShield; }
 };

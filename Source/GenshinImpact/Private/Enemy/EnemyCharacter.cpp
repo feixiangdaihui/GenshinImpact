@@ -2,10 +2,12 @@
 #include "Enemy/EnemyAnim.h"
 #include "EnemyComponent/AttackComponent.h"
 #include "EnemyComponent/RemoteAttackComponent.h"
+#include "EnemyComponent/SkillAttackComponent.h"
 #include "EnemyComponent/MoveComponent.h"
 #include "EnemyComponent/ImmobileMoveComponent.h"
 #include "EnemyComponent/DetectComponent.h"
 #include "EnemyComponent/EnemyHealthComponent.h"
+#include "EnemyComponent/ReboundHealthComponent.h"
 #include "Interface/AttackInterface.h"
 #include "Interface/MoveInterface.h"
 #include "Interface/DetectInterface.h"
@@ -16,38 +18,47 @@
 AEnemyCharacter::AEnemyCharacter() : AttackInterface(nullptr), MoveInterface(nullptr), DetectInterface(nullptr), HealthInterface(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	DestroyTime = 5.0f;
+	DestroyTime = 2.0f;
+	bIsDead = false;
 }
 
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	//// 创建组件并绑定到成员变量
+	//if (AttackComponentClass)
+	//{
+	//	AttackComponent = NewObject<UActorComponent>(this, AttackComponentClass);
+	//	AttackComponent->RegisterComponent();
+	//	AddOwnedComponent(AttackComponent);
+	//}
+	//if (MoveComponentClass)
+	//{
+	//	MoveComponent = NewObject<UActorComponent>(this, MoveComponentClass);
+	//	MoveComponent->RegisterComponent();
+	//	AddOwnedComponent(MoveComponent);
+	//}
+	//if (DetectComponentClass)
+	//{
+	//	DetectComponent = NewObject<UActorComponent>(this, DetectComponentClass);
+	//	DetectComponent->RegisterComponent();
+	//	AddOwnedComponent(DetectComponent);
+	//}
+	//if (HealthComponentClass)
+	//{
+	//	HealthComponent = NewObject<UActorComponent>(this, HealthComponentClass);
+	//	HealthComponent->RegisterComponent();
+	//	AddOwnedComponent(HealthComponent);
+	//}
+	AttackComponent = FindComponentByClass<UAttackComponent>();
+	if (!AttackComponent)AttackComponent = FindComponentByClass<URemoteAttackComponent>();
+	if (!AttackComponent)AttackComponent = FindComponentByClass<USkillAttackComponent>();
+	MoveComponent = FindComponentByClass<UMoveComponent>();
+	if (!MoveComponent)MoveComponent = FindComponentByClass<UImmobileMoveComponent>();
+	DetectComponent = FindComponentByClass<UDetectComponent>();
+	HealthComponent = FindComponentByClass<UEnemyHealthComponent>();
+	if (!HealthComponent)HealthComponent = FindComponentByClass<UReboundHealthComponent>();
 
-	// 创建组件并绑定到成员变量
-	if (AttackComponentClass)
-	{
-		AttackComponent = NewObject<UActorComponent>(this, AttackComponentClass);
-		AttackComponent->RegisterComponent();
-		AddOwnedComponent(AttackComponent);
-	}
-	if (MoveComponentClass)
-	{
-		MoveComponent = NewObject<UActorComponent>(this, MoveComponentClass);
-		MoveComponent->RegisterComponent();
-		AddOwnedComponent(MoveComponent);
-	}
-	if (DetectComponentClass)
-	{
-		DetectComponent = NewObject<UActorComponent>(this, DetectComponentClass);
-		DetectComponent->RegisterComponent();
-		AddOwnedComponent(DetectComponent);
-	}
-	if (HealthComponentClass)
-	{
-		HealthComponent = NewObject<UActorComponent>(this, HealthComponentClass);
-		HealthComponent->RegisterComponent();
-		AddOwnedComponent(HealthComponent);
-	}
 	if (!AttackComponent)
 		UE_LOG(LogTemp, Error, TEXT("Failed to create AttackComponent"));
 	if (!MoveComponent)
@@ -150,5 +161,18 @@ float AEnemyCharacter::GetCurrentHealthPercent() const
 	{
 		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
 		return 1.0f;
+	}
+}
+
+float AEnemyCharacter::GetCurrentShieldPercent() const
+{
+	if (HealthInterface)
+	{
+		return HealthInterface->GetCurrentShieldPercent();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in EnemyCharacter!"));
+		return 0.0f;
 	}
 }

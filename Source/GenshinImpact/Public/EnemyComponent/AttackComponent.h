@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Interface/AttackInterface.h"
+#include "GlobalTypes/GlobalTypes.h"
 #include "AttackComponent.generated.h"
 
 /**
@@ -17,53 +18,34 @@ public:
     UAttackComponent();
 
     // IAttackInterface 实现
-    virtual void NormalAttack() override;
-    virtual void NormalRemoteAttack() override { return; };
+    virtual void NormalAttack(int AttackOpt) override;
+    virtual void NormalRemoteAttack(int AttackOpt) override { return; };
     virtual void SkillAttack(int SkillOpt) override { return; };
-    virtual bool CanAttack() const override;
-    virtual bool CanRemoteAttack() const override { return false; }
-    virtual bool CanSkillAttack() const override { return false; }
-    virtual bool IsInRange() const override;
-	virtual bool IsInRemoteRange() const override { return false; }
-    virtual bool IsInSkillRange() const override { return false; }
-    virtual bool GetIsAttacking() const override { return bIsAttacking; }
-    virtual bool GetIsSkillAttacking() const override { return false; }
+    virtual bool CanAttack(int AttackOpt) const override;
+    virtual bool CanRemoteAttack(int AttackOpt) const override { return false; }
+    virtual bool CanSkillAttack(int SkillOpt) const override { return false; }
+    virtual bool IsInRange(int AttackOpt) const override;
+	virtual bool IsInRemoteRange(int AttackOpt) const override { return false; }
+    virtual bool IsInSkillRange(int SkillOpt) const override { return false; }
+    virtual bool GetIsAttacking(int AttackOpt) const override;
+    virtual bool GetIsSkillAttacking(int SkillOpt) const override { return false; }
+
+	UFUNCTION(BlueprintCallable)
+    void AddAttack(FString Name, float CD, float Range, float Damage, float AnimDuration) { Attacks.Add(FAttack(Name, CD, Range, Damage, AnimDuration)); };
+
+	UFUNCTION(BlueprintCallable)
+    TArray<FAttack> GetAttacks() { return Attacks; };
 
 protected:
     virtual void BeginPlay() override;
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    //攻击数组
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack Settings")
+	TArray<FAttack> Attacks;
 
-private:
-    // 攻击冷却时间
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackCooldown;
-
-    // 攻击范围
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackRange;
-
-    // 攻击伤害
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackDamage;
-
-    // 攻击动画时长
-    UPROPERTY(EditAnywhere, Category = "Attack Settings")
-    float AttackAnimationDuration;
+    //攻击动画计时器句柄
+	FTimerHandle AttackEndTimerHandle;
 
     // 攻击对象
     AActor* TargetActor;
-
-    // 是否可以攻击
-    bool bCanAttack;
-
-    // 重置攻击状态
-    void ResetAttackCooldown();
-
-    // 攻击冷却计时器句柄
-    FTimerHandle AttackCooldownTimerHandle;
-
-    // 攻击动画计时器句柄
-    FTimerHandle AttackEndTimerHandle;
-
-    // 是否正在攻击
-    bool bIsAttacking;
 };

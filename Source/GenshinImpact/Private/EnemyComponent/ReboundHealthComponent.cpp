@@ -13,22 +13,13 @@ UReboundHealthComponent::UReboundHealthComponent()
 	MaxHealth = 1000.0f;
 	CurrentHealth = MaxHealth;
 	HealAmount = 10.0f;
+	TimeNeededToHeal = 15.0f;
+	TimeSinceLastAttacked = 0.0f;
 	bIsDead = false;
 	bIsBeingAttacked = false;
 	ReboundRatio = 0.02f;
 	ElementType = GElement::Fire;
-}
-
-// Called when the game starts
-void UReboundHealthComponent::BeginPlay()
-{
-	UActorComponent::BeginPlay();
-}
-
-// Called every frame
-void UReboundHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	UActorComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Level = 10.0f;
 }
 
 void UReboundHealthComponent::TakeDamageByValue(float DamageAmount, float TimeToBeAttacked)
@@ -82,23 +73,4 @@ void UReboundHealthComponent::TakeDamageByPercent(float DamagePercent, float Tim
 		&UReboundHealthComponent::ResetBeAttacked,
 		TimeToBeAttacked,
 		false);
-}
-
-void UReboundHealthComponent::Die()
-{
-	bIsBeingAttacked = false;
-	bIsDead = true;
-	CurrentHealth = 0.0f;
-	UE_LOG(LogTemp, Warning, TEXT("bIsDead: %s"), bIsDead ? TEXT("true") : TEXT("false"));
-
-}
-
-void UReboundHealthComponent::Heal()
-{
-	if (bIsDead || bIsBeingAttacked || CurrentHealth >= MaxHealth)
-		return;
-
-	CurrentHealth += HealAmount;
-	if (CurrentHealth >= MaxHealth)
-		CurrentHealth = MaxHealth;
 }

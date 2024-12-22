@@ -5,18 +5,11 @@
 #include "Character/PlayCharacter.h"
 #include "PlayerController/SumPlayerController.h"
 #include "PlayerComponent/HealthComponent.h"
+#include "GlobalTypes/GlobalTypes.h"
 
 UAttackComponent::UAttackComponent()
 {
-    PrimaryComponentTick.bCanEverTick = false;
-
-    // 默认属性值
-    AttackCooldown = 2.0f;  // 每次攻击的冷却时间
-    AttackRange = 200.0f;   // 默认攻击范围
-	AttackDamage = 10.0f;   // 默认攻击伤害
-	AttackAnimationDuration = 0.6f;// 默认攻击动画时长
-    bIsAttacking = false;   // 初始状态不在攻击
-    bCanAttack = true;      // 初始状态可以攻击
+    PrimaryComponentTick.bCanEverTick = true;
 	TargetActor = nullptr;  // 初始状态没有攻击对象
 }
 
@@ -25,9 +18,36 @@ void UAttackComponent::BeginPlay()
     UActorComponent::BeginPlay();
     // 获取攻击对象
     TargetActor = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+
+    UE_LOG(LogTemp, Warning, TEXT("Number of Attacks: %d"), Attacks.Num());
+
 }
 
-bool UAttackComponent::CanAttack() const
+void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    UActorComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    static bool FirstFrame = true;
+	if (FirstFrame)
+	{
+		FirstFrame = false;
+		TargetActor = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	}
+	for (int i = 1; i < Attacks.Num(); i++)
+	{
+		if (!Attacks[i].bCanUse)
+		{
+			Attacks[i].CurrentCooldown += DeltaTime;
+			if (Attacks[i].CurrentCooldown >= Attacks[i].Cooldown)
+			{
+				Attacks[i].bCanUse = true;
+				Attacks[i].CurrentCooldown = 0.0f;
+			}
+		}
+	}
+}
+
+bool UAttackComponent::CanAttack(int AttackOpt) const
 {
     if (!TargetActor)
     {
@@ -43,17 +63,38 @@ bool UAttackComponent::CanAttack() const
     // 计算与目标的距离
     float DistanceToTarget = FVector::Dist(Owner->GetActorLocation(), TargetActor->GetActorLocation());
 
-    // 检查距离是否在攻击范围内
-    if (DistanceToTarget <= AttackRange && !bIsAttacking && bCanAttack)
+    if (AttackOpt == 0)
     {
-		UE_LOG(LogTemp, Warning, TEXT("Can attack target: %s"), *TargetActor->GetName());
-        return true;
+		UE_LOG(LogTemp, Warning, TEXT("atkcop: attackopt is %d"), Attacks.Num());
+		for (int i = 1; i < Attacks.Num(); i++)
+		{
+            if (DistanceToTarget <= Attacks[i].Range && !Attacks[i].bIsUsing && Attacks[i].bCanUse)
+            {
+				UE_LOG(LogTemp, Warning, TEXT("atkcop: exist can attack target"));
+                return true;
+            }
+            else 
+                UE_LOG(LogTemp, Warning, TEXT("atkcop: %d %d %d %d"), i, DistanceToTarget <= Attacks[i].Range, Attacks[i].bIsUsing, Attacks[i].bCanUse);
+		}
+        UE_LOG(LogTemp, Warning, TEXT("atkcop: all annot attack target"));
+        return false;
+    }
+
+    // 检查距离是否在攻击范围内
+    if (DistanceToTarget <= Attacks[AttackOpt].Range && !Attacks[AttackOpt].bIsUsing && Attacks[AttackOpt].bCanUse)
+    {
+		UE_LOG(LogTemp, Warning, TEXT("atkcop: can attack target"));
+		return true;
     }
     else
+    {
+		UE_LOG(LogTemp, Warning, TEXT("atkcop: cannot attack target"));
 		return false;
+    }
+		
 }
 
-bool UAttackComponent::IsInRange() const
+bool UAttackComponent::IsInRange(int AttackOpt) const
 {
 	if (!TargetActor)
 	{
@@ -66,16 +107,40 @@ bool UAttackComponent::IsInRange() const
 	}
 	// 计算与目标的距离
 	float DistanceToTarget = FVector::Dist(Owner->GetActorLocation(), TargetActor->GetActorLocation());
+
+    if (AttackOpt == 0)
+    {
+        for (int i = 1; i < Attacks.Num(); i++)
+        {
+            if (DistanceToTarget <= Attacks[i].Range)
+                return true;
+        }
+        return false;
+    }
+
 	// 检查距离是否在攻击范围内
-	if (DistanceToTarget <= AttackRange)
+	if (DistanceToTarget <= Attacks[AttackOpt].Range)
 		return true;
 	else
 		return false;
 }
 
-void UAttackComponent::NormalAttack()
+bool UAttackComponent::GetIsAttacking(int AttackOpt) const
 {
-    if (!CanAttack())
+	if (AttackOpt == 0)
+	{
+		for (int i = 1; i < Attacks.Num(); i++)
+			if (Attacks[i].bIsUsing)
+				return true;
+		return false;
+	}
+
+	return Attacks[AttackOpt].bIsUsing;
+}
+
+void UAttackComponent::NormalAttack(int AttackOpt)
+{
+    if (!CanAttack(AttackOpt))
     {
         UE_LOG(LogTemp, Warning, TEXT("Cannot attack target: %s"), TargetActor ? *TargetActor->GetName() : TEXT("Invalid Target"));
         return;
@@ -84,37 +149,32 @@ void UAttackComponent::NormalAttack()
     // 执行攻击逻辑
     UE_LOG(LogTemp, Warning, TEXT("Performing attack on target: %s"), *TargetActor->GetName());
 
+    if (AttackOpt == 0)
+    {
+        for (int i = 1; i < Attacks.Num(); i++)
+            if (CanAttack(i))
+            {
+                AttackOpt = i;
+                break;
+            }
+    }
+
     // 对目标造成伤害
-    bIsAttacking = true;
+    Attacks[AttackOpt].bIsUsing = true;
 
     GetWorld()->GetTimerManager().SetTimer(
         AttackEndTimerHandle, // 使用计时器句柄
-        [this]() {
+        [this, AttackOpt]()
+        {
             APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
             if (PlayerCharacter)
-            {
-                PlayerCharacter->HealthComponent->DamageHealthByValue(AttackDamage); // 延迟伤害
-            }
-            bIsAttacking = false;
+                PlayerCharacter->HealthComponent->DamageHealthByValue(Attacks[AttackOpt].Damage); // 延迟伤害
+			Attacks[AttackOpt].bIsUsing = false;
         },
-        AttackAnimationDuration,
+        Attacks[AttackOpt].AnimationDuration,
         false
     );
 
     // 攻击完成后进入冷却
-	bCanAttack = false;
-
-    // 使用计时器重置攻击状态
-    GetWorld()->GetTimerManager().SetTimer(
-        AttackCooldownTimerHandle, // 使用计时器句柄
-        [this]() { ResetAttackCooldown(); }, // Lambda 函数，用于重置攻击状态
-        AttackCooldown,
-        false
-    );
-}
-
-void UAttackComponent::ResetAttackCooldown()
-{
-	bCanAttack = true;
-    UE_LOG(LogTemp, Warning, TEXT("Attack cooldown reset."));
+	Attacks[AttackOpt].bCanUse = false;
 }

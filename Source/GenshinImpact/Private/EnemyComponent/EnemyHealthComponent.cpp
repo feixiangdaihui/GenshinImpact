@@ -8,9 +8,12 @@ UEnemyHealthComponent::UEnemyHealthComponent()
 	MaxHealth = 1000.0f;
 	CurrentHealth = MaxHealth;
 	HealAmount = 10.0f;
+	TimeNeededToHeal = 15.0f;
+	TimeSinceLastAttacked = 0.0f;
 	bIsDead = false;
 	bIsBeingAttacked = false;
 	ElementType = GElement::Fire;
+	Level = 10.0f;
 }
 
 // Called when the game starts
@@ -23,6 +26,15 @@ void UEnemyHealthComponent::BeginPlay()
 void UEnemyHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	UActorComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!bIsBeingAttacked)
+	{
+		TimeSinceLastAttacked += DeltaTime;
+		if (TimeSinceLastAttacked >= TimeNeededToHeal)
+		{
+			Heal();
+			TimeSinceLastAttacked = TimeNeededToHeal;
+		}
+	}
 }
 
 void UEnemyHealthComponent::TakeDamageByValue(float DamageAmount, float TimeToBeAttacked)

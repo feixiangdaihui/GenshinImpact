@@ -92,12 +92,10 @@ void AEnemyAIController::Tick(float DeltaTime)
         if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
-            UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking back!"));
         }
         else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
         {
             EnemyCharacter->AttackInterface->NormalRemoteAttack();
-            UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking back!"));
         }
         else
         {
@@ -110,6 +108,7 @@ void AEnemyAIController::Tick(float DeltaTime)
         if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
+			UE_LOG(LogTemp, Warning, TEXT("AI:Enemy is attacking!"));
         }
         else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
         {
@@ -122,6 +121,7 @@ void AEnemyAIController::Tick(float DeltaTime)
         else
         {
             EnemyCharacter->MoveInterface->ChasePlayer();
+            UE_LOG(LogTemp, Warning, TEXT("AI:Enemy is chasing!"));
         }
     }
 	else if (EnemyCharacter->DetectInterface->GetLastPerceptionLocation() != FVector::ZeroVector 

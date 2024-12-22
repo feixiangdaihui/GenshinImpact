@@ -29,30 +29,6 @@ protected://内部变量
     IDetectInterface* DetectInterface;
     IEnemyHealthInterface* HealthInterface;
 
-    /*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UAttackComponent> AttackComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UMoveComponent> MoveComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UDetectComponent> DetectComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UEnemyHealthComponent> HealthComponent;*/
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-    TSubclassOf<UActorComponent> AttackComponentClass;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-    TSubclassOf<UActorComponent> MoveComponentClass;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-    TSubclassOf<UActorComponent> DetectComponentClass;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-    TSubclassOf<UActorComponent> HealthComponentClass;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     TObjectPtr<UActorComponent> AttackComponent;
 
@@ -93,4 +69,7 @@ public://外部接口
 
     UFUNCTION(BlueprintCallable)
     float GetCurrentHealthPercent() const;
+
+	UFUNCTION(BlueprintCallable)
+    float GetCurrentShieldPercent() const;
 };

@@ -22,6 +22,7 @@ protected:
 
 	virtual void Die() override;
 	virtual void Heal() override;
+	virtual void RestoreShield() override { return; };
 	virtual void ResetBeAttacked() override { bIsBeingAttacked = false; }
 
 	// 最大生命值
@@ -52,6 +53,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Health Settings")
 	GElement ElementType;
 
+	// 脱战回血时间
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float TimeNeededToHeal;
+
+	//记录脱战时间
+	float TimeSinceLastAttacked;
+
 	FTimerHandle BeAttackedStateTimerHandle;
 
 public:	
@@ -68,6 +76,7 @@ public:
 	virtual float GetCurrentHealth() const override { return CurrentHealth; }
 	UFUNCTION(BlueprintCallable)
 	virtual float GetCurrentHealthPercent() const override { return CurrentHealth / MaxHealth; }
+	virtual float GetCurrentShieldPercent() const override { return 0.0f; }
 	virtual GElement GetElementType() const override { return ElementType; }
 	virtual float GetLevel() const override { return Level; }
 };
