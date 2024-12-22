@@ -41,5 +41,6 @@ public:
 	float GetBaseElementPower() { return BaseElementPower; }
 	float GetElementPower() { return SumElementPower; }
 	GElement GetElementType() { return ElementType; }
-	void UpdateSumElementPowerByAdd(float ElementPower) { SumElementPower = BaseElementPower + ElementPower; }
+	void AddElementPower(float ElementPower) { SumElementPower += ElementPower; }
+	void MinusElementPower(float ElementPower) { SumElementPower -= ElementPower; }
 };

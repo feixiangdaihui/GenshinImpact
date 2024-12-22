@@ -36,6 +36,7 @@ public:
 	
 	float GetAttackPower() { return SumAttackPower; }
 	float GetBaseAttackPower() { return BaseAttackPower; }
-	void UpdateSumAttackPowerByAdd(float AttackPower) { SumAttackPower = BaseAttackPower + AttackPower; }
+	void AddAttackPower(float AttackPower) { SumAttackPower += AttackPower; }
+	void MinusAttackPower(float AttackPower) { SumAttackPower -= AttackPower; }
 };
 
