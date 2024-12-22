@@ -32,10 +32,19 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Health Settings")
 	float ShieldHealAmount;
 
+	// 技能数组
+	UPROPERTY(EditAnywhere, Category = "Skill Settings")
+	TArray<FSkill> Skills;
+
+	// 技能动画计时器句柄
+	FTimerHandle SkillEndTimerHandle;
+
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void TakeDamageByValue(float DamageAmount, float TimeToBeAttacked = 0.5f) override;
 	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) override;
 	virtual float GetCurrentShieldPercent() const override { return CurrentShield / MaxShield; }
+	virtual bool GetIsUsingSkill(int SkillOpt) const;
+	virtual void UseSkill(int SkillOpt) override;
 };

@@ -77,6 +77,7 @@ public:
 	virtual void TakeDamageByValue(float DamageAmount, float TimeToBeAttacked = 0.5f) override;
 	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) override;
 	virtual bool GetIsBeingAttacked() const override { return bIsBeingAttacked; }
+	virtual bool GetIsUsingSkill(int SkillOpt) const { return false; }
 	UFUNCTION(BlueprintCallable)
 	virtual bool GetIsDead() const override { return bIsDead; }
 	UFUNCTION(BlueprintCallable)
@@ -88,4 +89,5 @@ public:
 	virtual GElement GetElementType() const override { return ElementType; }
 	virtual float GetLevel() const override { return Level; }
 	virtual void ConveyExperience() const override;
+	virtual void UseSkill(int SkillOpt) override { return; }
 };

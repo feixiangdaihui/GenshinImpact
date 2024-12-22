@@ -23,6 +23,7 @@ public:
 	virtual void TakeDamageByPercent(float DamagePercent, float TimeToBeAttacked = 0.5f) = 0;
 	virtual bool GetIsBeingAttacked() const = 0;
 	virtual bool GetIsDead() const = 0;
+	virtual bool GetIsUsingSkill(int SkillOpt = 0) const = 0;
 	virtual float GetMaxHealth() const = 0;
 	virtual float GetCurrentHealth() const = 0;
 	virtual float GetCurrentHealthPercent() const = 0;
@@ -30,6 +31,7 @@ public:
 	virtual GElement GetElementType() const = 0;
 	virtual float GetLevel() const = 0;
 	virtual void ConveyExperience() const = 0;
+	virtual void UseSkill(int SkillOpt = 0) = 0;
 
 protected:
 	virtual void Heal() = 0;

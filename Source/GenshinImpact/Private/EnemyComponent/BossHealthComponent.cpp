@@ -8,6 +8,7 @@ UBossHealthComponent::UBossHealthComponent()
 	MaxHealth = 1000.0f;
 	CurrentHealth = MaxHealth;
 	HealAmount = 10.0f;
+	ShieldHealAmount = 10.0f;
 	MaxShield = 1000.0f;
 	CurrentShield = MaxShield;
 	TimeNeededToHeal = 15.0f;
@@ -29,6 +30,19 @@ void UBossHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 			Heal();
 			RestoreShield();
 			TimeSinceLastAttacked = TimeNeededToHeal;
+		}
+	}
+
+	for (int i = 1; i < Skills.Num(); i++)
+	{
+		if (!Skills[i].bCanUse)
+		{
+			Skills[i].CurrentCooldown += DeltaTime;
+			if (Skills[i].CurrentCooldown >= Skills[i].Cooldown)
+			{
+				Skills[i].bCanUse = true;
+				Skills[i].CurrentCooldown = 0.0f;
+			}
 		}
 	}
 }
@@ -100,4 +114,72 @@ void UBossHealthComponent::RestoreShield()
 	CurrentShield += ShieldHealAmount;
 	if (CurrentShield >= MaxShield)
 		CurrentShield = MaxShield;
+}
+
+void UBossHealthComponent::UseSkill(int SkillOpt)
+{
+	if (bIsDead || bIsBeingAttacked)
+		return;
+
+	if (SkillOpt < 0)
+		SkillOpt = 0;
+	else if (SkillOpt >= Skills.Num())
+		SkillOpt = Skills.Num() - 1;
+
+	if (SkillOpt == 0)
+	{
+		for (int i = 1; i < Skills.Num(); i++)
+		{
+			if (Skills[i].bCanUse)
+			{
+				SkillOpt = i;
+				break;
+			}
+		}
+	}
+
+	if (SkillOpt == SKILL_RESTORE_SHIELD)
+	{
+		CurrentShield += Skills[SkillOpt].Damage;
+		if (CurrentShield >= MaxShield)
+			CurrentShield = MaxShield;
+	}
+	else if (SkillOpt == SKILL_HEAL)
+	{
+		CurrentHealth += Skills[SkillOpt].Damage;
+		if (CurrentHealth >= MaxHealth)
+			CurrentHealth = MaxHealth;
+	}
+
+	Skills[SkillOpt].bIsUsing = true;
+	Skills[SkillOpt].bCanUse = false;
+	GetWorld()->GetTimerManager().SetTimer(
+		SkillEndTimerHandle,
+		[this, SkillOpt]()
+		{
+			Skills[SkillOpt].bIsUsing = false;
+		},
+		Skills[SkillOpt].AnimationDuration,
+		false
+	);
+}
+
+bool UBossHealthComponent::GetIsUsingSkill(int SkillOpt) const
+{
+	if (SkillOpt < 0)
+		SkillOpt = 0;
+	else if (SkillOpt >= Skills.Num())
+		SkillOpt = Skills.Num() - 1;
+
+	if (SkillOpt == 0)
+	{
+		for (int i = 1; i < Skills.Num(); i++)
+		{
+			if (Skills[i].bIsUsing)
+				return true;
+		}
+		return false;
+	}
+
+	return Skills[SkillOpt].bIsUsing;
 }

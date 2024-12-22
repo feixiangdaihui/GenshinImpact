@@ -21,6 +21,7 @@ class GENSHINIMPACT_API AEnemyCharacter : public ACharacter
 {
     GENERATED_BODY()
     friend class AEnemyAIController;
+    friend class ABossAIController;
     friend class UEnemyAnim;
 
 protected://内部组件
