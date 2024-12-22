@@ -5,6 +5,8 @@
 #include "Hud/BaseHud.h"
 #include "Character/PlayCharacter.h"
 #include"GameSave/MyGameInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 
 
 void ASumPlayerController::BeginPlay()
@@ -12,7 +14,6 @@ void ASumPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	InitializeCharacterMessageAtBeginPlay();
-	LoadCharacterData();
 
 
 	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
@@ -72,6 +73,7 @@ void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 	}
 	LoadCharacterData();
 
+
 }
 
 void ASumPlayerController::ChangeCharacter(int CharacterIndex)
@@ -105,15 +107,25 @@ void ASumPlayerController::SetCharacterVisibility(int32 CharacterIndex, bool bVi
 	}
 }
 
+
+
 void ASumPlayerController::SeqChangeCharacter()
 {
-	int NextCharacterIndex = CurrentCharacterIndex + 1;
-	if (NextCharacterIndex >= Characters.Num())
+	if(CheckIsAllCharacterDead())
 	{
-		NextCharacterIndex = 0;
+		GameOver();
+		return;
+	}
+	int NextCharacterIndex = CurrentCharacterIndex;
+	while (1)
+	{
+		NextCharacterIndex = (NextCharacterIndex + 1) % CHARACTERNUM;
+		if (!Characters[NextCharacterIndex]->GetIsDead())
+		{
+			break;
+		}
 	}
 	ChangeCharacter(NextCharacterIndex);
-
 }
 
 void ASumPlayerController::SaveCharacterData()
@@ -134,7 +146,7 @@ void ASumPlayerController::LoadCharacterData()
 	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(GetGameInstance());
 	if (GameInstance)
 	{
-		for (auto PlayerCharacter : Characters)
+		for (auto PlayerCharacter:Characters)
 		{
 			FCharacterData CharacterData;
 			if (GameInstance->GetCharacterData(PlayerCharacter->GetName(), CharacterData))
@@ -179,5 +191,25 @@ void ASumPlayerController::ToggleInventory()
 			UE_LOG(LogTemp, Warning, TEXT("Function %s not found in InventoryComponent."), *FunctionName.ToString());
 		}
 	}
+}
+
+bool ASumPlayerController::CheckIsAllCharacterDead()
+{
+	for (auto PlayerCharacter : Characters)
+	{
+		if (!PlayerCharacter->GetIsDead())
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void ASumPlayerController::GameOver()
+{
+	//退出游戏
+	SaveCharacterData();
+	// 退出游戏
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }
 

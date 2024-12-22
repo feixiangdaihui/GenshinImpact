@@ -106,4 +106,9 @@ void UHealthComponent::MinusMaxHealth(float HealthToMinus)
 	}
 }
 
+void UHealthComponent::InitializeHealthComponent(float InitHealth)
+{
+	CurrentHealth = InitHealth;
+}
+
 
