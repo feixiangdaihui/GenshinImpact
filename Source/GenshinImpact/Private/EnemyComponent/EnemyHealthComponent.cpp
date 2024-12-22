@@ -1,6 +1,12 @@
 #include "EnemyComponent/EnemyHealthComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
+#include "Engine/World.h"
+#include "Character/PlayCharacter.h"
+#include "PlayerController/SumPlayerController.h"
+#include "PlayerComponent/HealthComponent.h"
+#include "PlayerComponent/LevelComponent.h"
 
-// Sets default values for this component's properties
 UEnemyHealthComponent::UEnemyHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -87,9 +93,8 @@ void UEnemyHealthComponent::Die()
 {
 	bIsBeingAttacked = false;
 	bIsDead = true;
-	CurrentHealth = 0.0f;
-	UE_LOG(LogTemp, Warning, TEXT("bIsDead: %s"), bIsDead ? TEXT("true") : TEXT("false"));
-
+	CurrentHealth = 0.0f;	
+	ConveyExperience();
 }
 
 void UEnemyHealthComponent::Heal()
@@ -102,3 +107,9 @@ void UEnemyHealthComponent::Heal()
 		CurrentHealth = MaxHealth;
 }
 
+void UEnemyHealthComponent::ConveyExperience() const 
+{
+	APlayCharacter* PlayerCharacter = Cast<APlayCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
+	PlayerCharacter->LevelComponent->AddExperience(Experience);
+	UE_LOG(LogTemp, Warning, TEXT("Player get experience: %f"), Experience);
+}

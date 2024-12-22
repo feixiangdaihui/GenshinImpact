@@ -62,6 +62,14 @@ protected:
 
 	FTimerHandle BeAttackedStateTimerHandle;
 
+	// 掉落经验
+	UPROPERTY(EditAnywhere, Category = "Health Settings")
+	float Experience;
+
+	// 掉落装备
+	/*UPROPERTY(EditAnywhere, Category = "Health Settings")
+	Equipments;*/
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -79,4 +87,5 @@ public:
 	virtual float GetCurrentShieldPercent() const override { return 0.0f; }
 	virtual GElement GetElementType() const override { return ElementType; }
 	virtual float GetLevel() const override { return Level; }
+	virtual void ConveyExperience() const override;
 };

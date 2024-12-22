@@ -23,7 +23,7 @@ class GENSHINIMPACT_API AEnemyCharacter : public ACharacter
     friend class AEnemyAIController;
     friend class UEnemyAnim;
 
-protected://内部变量
+protected://内部组件
     IAttackInterface* AttackInterface;
     IMoveInterface* MoveInterface;
     IDetectInterface* DetectInterface;
@@ -41,9 +41,10 @@ protected://内部变量
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     TObjectPtr<UActorComponent> HealthComponent;
 
-protected:
+protected://内部函数
     virtual void BeginPlay() override;
 
+protected://内部变量
     //角色销毁定时器句柄
     FTimerHandle DestroyTimerHandle;
 

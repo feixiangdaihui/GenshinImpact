@@ -35,7 +35,7 @@ void ULevelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 void ULevelComponent::AddExperience(float ExperienceToAdd)
 {
 	Experience += ExperienceToAdd;
-	if (Experience >= ExperienceToLevelUp)
+	while (Experience >= ExperienceToLevelUp)
 	{
 		LevelUp();
 	}
