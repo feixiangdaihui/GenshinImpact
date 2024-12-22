@@ -7,7 +7,7 @@
 #include "Interface/AttackInterface.h"
 #include "RemoteAttackComponent.generated.h"
 
-
+class AEnemyBallProjectile;
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class GENSHINIMPACT_API URemoteAttackComponent : public UActorComponent, public IAttackInterface
 {
@@ -67,4 +67,10 @@ protected:
 
     // 是否正在攻击
     bool bIsRemoteAttacking;
+
+    // 子弹
+	UPROPERTY(EditAnywhere, Category = "Projectile Settings")
+	TSubclassOf<AEnemyBallProjectile> BallProjectileClass;
+
+    
 };

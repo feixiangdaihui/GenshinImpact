@@ -44,6 +44,7 @@ void UEnemyAnim::NativeUpdateAnimation(float DeltaSeconds)
     if (EnemyCharacter->AttackInterface)
     {
         bIsAttacking = EnemyCharacter->AttackInterface->GetIsAttacking();
+		bIsSkillAttacking = EnemyCharacter->AttackInterface->GetIsSkillAttacking();
 		bIsInRange = EnemyCharacter->AttackInterface->IsInRange();
 		//UE_LOG(LogTemp, Warning, TEXT("bIsAttacking: %d"), bIsAttacking);
 		//UE_LOG(LogTemp, Warning, TEXT("bIsInRange: %d"), bIsInRange);
@@ -52,6 +53,7 @@ void UEnemyAnim::NativeUpdateAnimation(float DeltaSeconds)
     {
         bIsBeingAttacked = EnemyCharacter->HealthInterface->GetIsBeingAttacked();
         bIsDead = EnemyCharacter->HealthInterface->GetIsDead();
+		bIsUsingHealthSkill = EnemyCharacter->HealthInterface->GetIsUsingSkill();
 		//UE_LOG(LogTemp, Warning, TEXT("bIsBeingAttacked: %d"), bIsBeingAttacked);
 		//UE_LOG(LogTemp, Warning, TEXT("bIsDead: %d"), bIsDead);
     }

@@ -8,6 +8,10 @@
 #define ELEMENTRESTRAINPOSITIVE 1.2
 #define ELEMENTRESTRAINNEGATIVE 0.8
 #define LEVELMODIFY 0.01
+#define SKILL_HEAL 1
+#define SKILL_RESTORE_SHIELD 2
+#define SKILL_START 3
+#define SKILL_END 6
 
 UENUM(BlueprintType)
 enum class GElement : uint8

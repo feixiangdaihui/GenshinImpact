@@ -44,6 +44,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* WearEquipmentAction;
 
+	bool IsDead = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
     bool IsAnimForbidden;
@@ -127,10 +128,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PickUp")
 	float PickUpDistance;
+
+
 public:
 	//保存游戏相关
 	void LoadCharacterData(FCharacterData& );
 	FCharacterData SaveCharacterData();
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsDead() { return IsDead; }
 private:
 	//切换角色
 	void SeqChangeCharacter();
