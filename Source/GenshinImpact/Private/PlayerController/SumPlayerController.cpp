@@ -14,11 +14,6 @@ void ASumPlayerController::BeginPlay()
 	InitializeCharacterMessageAtBeginPlay();
 	LoadCharacterData();
 
-	Hud = Cast<ABaseHud>(GetHUD());
-	if (!Hud)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HUD is not of type ABaseHud."));
-	}
 
 	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
 	if (PlayerCharacter)
