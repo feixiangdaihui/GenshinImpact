@@ -45,7 +45,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	float GetCurrentHealth() { return CurrentHealth; }
 	UFUNCTION(BlueprintCallable, Category = "Health")
-	void UpdateMaxHealthByAdd(float HealthToAdd) { MaxHealth = HealthToAdd + BaseHealth; }
+	void AddMaxHealth(float HealthToAdd);
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void MinusMaxHealth(float HealthToMinus);
 
 	void InitializeHealthComponent(float InitHealth) { CurrentHealth = InitHealth; }
 

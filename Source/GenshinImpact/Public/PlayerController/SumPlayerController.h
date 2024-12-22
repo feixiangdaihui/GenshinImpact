@@ -20,8 +20,8 @@ UCLASS()
 class GENSHINIMPACT_API ASumPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+	int CurrentCharacterIndex=0;
 public:
-	TObjectPtr<ABaseHud> Hud;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	void InitializeCharacterMessageAtBeginPlay();
@@ -32,7 +32,7 @@ public:
 
 
 	TArray<TObjectPtr<APlayCharacter>> Characters;
-	int CurrentCharacterIndex;
+
 
 	void SetCharacterVisibility(int32 CharacterIndex, bool bVisible);
 
@@ -41,6 +41,10 @@ public:
 	void SaveCharacterData();
 	void LoadCharacterData();
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentCharacterIndex() { return CurrentCharacterIndex; }
+
 
 	virtual void SetupInputComponent() override;
 
@@ -49,7 +53,7 @@ public:
 
 private:
 	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* InventoryMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))

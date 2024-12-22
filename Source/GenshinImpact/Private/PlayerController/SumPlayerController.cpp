@@ -14,11 +14,6 @@ void ASumPlayerController::BeginPlay()
 	InitializeCharacterMessageAtBeginPlay();
 	LoadCharacterData();
 
-	Hud = Cast<ABaseHud>(GetHUD());
-	if (!Hud)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HUD is not of type ABaseHud."));
-	}
 
 	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
 	if (PlayerCharacter)
@@ -59,6 +54,7 @@ void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 {
 	APlayCharacter* FirstCharacter = Cast<APlayCharacter>(GetPawn());
 	Characters.Add(FirstCharacter);
+	FirstCharacter->SetCharacterIndex(0);
 	CurrentCharacterIndex = 0;
 	FVector CurrentCharacterLocation = FirstCharacter->GetActorLocation();
 	FRotator CurrentCharacterRotation = FirstCharacter->GetActorRotation();
@@ -71,8 +67,10 @@ void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
 			APlayCharacter* NewCharacter = GetWorld()->SpawnActor<APlayCharacter>(CharacterClasses[i], CurrentCharacterLocation, CurrentCharacterRotation, SpawnParameters);
 			Characters.Add(NewCharacter);
 			SetCharacterVisibility(i, false);
+			NewCharacter->SetCharacterIndex(i);
 		}
 	}
+	LoadCharacterData();
 
 }
 
@@ -84,11 +82,15 @@ void ASumPlayerController::ChangeCharacter(int CharacterIndex)
 		//隐藏当前角色
 		SetCharacterVisibility(CurrentCharacterIndex, false);
 		SetCharacterVisibility(CharacterIndex, true);
+		
 		CurrentCharacterIndex = CharacterIndex;
 
 		OnPossess(Characters[CharacterIndex]);
-
-
+		ABaseHud* BaseHud = Cast<ABaseHud>(GetHUD());
+		if (BaseHud)
+		{
+			BaseHud->ChangeCharacterUI();
+		}
 	}
 
 }

@@ -92,4 +92,18 @@ void UHealthComponent::SetMaxHealth(float NewMaxHealth)
 	MaxHealth = NewMaxHealth;
 }
 
+void UHealthComponent::AddMaxHealth(float HealthToAdd)
+{
+	MaxHealth += HealthToAdd;
+}
+
+void UHealthComponent::MinusMaxHealth(float HealthToMinus)
+{
+	MaxHealth -= HealthToMinus;
+	if (CurrentHealth > MaxHealth)
+	{
+		CurrentHealth = MaxHealth;
+	}
+}
+
 
