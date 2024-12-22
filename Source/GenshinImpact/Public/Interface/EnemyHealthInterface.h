@@ -27,11 +27,13 @@ public:
 	virtual float GetMaxHealth() const = 0;
 	virtual float GetCurrentHealth() const = 0;
 	virtual float GetCurrentHealthPercent() const = 0;
+	virtual float GetCurrentShieldPercent() const = 0;
 	virtual GElement GetElementType() const = 0;
 	virtual float GetLevel() const = 0;
 
 protected:
 	virtual void Heal() = 0;
+	virtual void RestoreShield() = 0;
 	virtual void Die() = 0;
 	virtual void ResetBeAttacked() = 0;
 };

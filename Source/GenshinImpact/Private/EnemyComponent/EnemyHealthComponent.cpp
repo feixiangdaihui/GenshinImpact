@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EnemyComponent/EnemyHealthComponent.h"
 
 // Sets default values for this component's properties
@@ -8,12 +5,15 @@ UEnemyHealthComponent::UEnemyHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	MaxHealth = 100.0f;
+	MaxHealth = 1000.0f;
 	CurrentHealth = MaxHealth;
 	HealAmount = 10.0f;
+	TimeNeededToHeal = 15.0f;
+	TimeSinceLastAttacked = 0.0f;
 	bIsDead = false;
 	bIsBeingAttacked = false;
 	ElementType = GElement::Fire;
+	Level = 10.0f;
 }
 
 // Called when the game starts
@@ -26,6 +26,15 @@ void UEnemyHealthComponent::BeginPlay()
 void UEnemyHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	UActorComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!bIsBeingAttacked)
+	{
+		TimeSinceLastAttacked += DeltaTime;
+		if (TimeSinceLastAttacked >= TimeNeededToHeal)
+		{
+			Heal();
+			TimeSinceLastAttacked = TimeNeededToHeal;
+		}
+	}
 }
 
 void UEnemyHealthComponent::TakeDamageByValue(float DamageAmount, float TimeToBeAttacked)
@@ -33,10 +42,10 @@ void UEnemyHealthComponent::TakeDamageByValue(float DamageAmount, float TimeToBe
 	if (bIsDead)
 		return;
 
-	
 	CurrentHealth -= DamageAmount;
 	if (CurrentHealth <= 0.0f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy is dead!"));
 		CurrentHealth = 0.0f;
 		Die();
 		return;
@@ -79,6 +88,8 @@ void UEnemyHealthComponent::Die()
 	bIsBeingAttacked = false;
 	bIsDead = true;
 	CurrentHealth = 0.0f;
+	UE_LOG(LogTemp, Warning, TEXT("bIsDead: %s"), bIsDead ? TEXT("true") : TEXT("false"));
+
 }
 
 void UEnemyHealthComponent::Heal()

@@ -15,10 +15,14 @@ class GENSHINIMPACT_API UHealthComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void DamageHealthByValue(float DamageValue);
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void DamageHealthByRate(float DamageRate);
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void RecoverHealthByValue(float RecoverValue);
-
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void RecoverHealthByRate(float DamageRate);
 
 private:
 	// Called when the game starts

@@ -48,11 +48,24 @@ void AEnemyAIController::Tick(float DeltaTime)
 
 
 	// 更新状态变量
-	if (EnemyCharacter->DetectInterface)
+    if (EnemyCharacter->MoveInterface)
+    {
+        bIsMoving = EnemyCharacter->MoveInterface->GetIsMoving();
+        bIsChasing = EnemyCharacter->MoveInterface->GetIsChasing();
+        bIsResting = EnemyCharacter->MoveInterface->GetIsResting();
+    }
+    else
+        UE_LOG(LogTemp, Error, TEXT("MoveInterface not found in AIController!"));
+
+	if (EnemyCharacter->DetectInterface && !bIsResting)
     { 
 	    EnemyCharacter->DetectInterface->DetectPlayer();
 	    bCanDetectPlayer = EnemyCharacter->DetectInterface->GetCanDetectPlayer();
 	}
+    else if (bIsResting)
+    {
+		bCanDetectPlayer = false;
+    }
 	else
 		UE_LOG(LogTemp, Error, TEXT("DetectInterface not found in AIController!"));
 
@@ -69,36 +82,24 @@ void AEnemyAIController::Tick(float DeltaTime)
     else
 		UE_LOG(LogTemp, Error, TEXT("HealthInterface not found in AIController!"));
 
-    if (EnemyCharacter->MoveInterface)
-    {
-        bIsMoving = EnemyCharacter->MoveInterface->GetIsMoving();
-        bIsChasing = EnemyCharacter->MoveInterface->GetIsChasing();
-        bIsResting = EnemyCharacter->MoveInterface->GetIsResting();
-    }
-    else
-		UE_LOG(LogTemp, Error, TEXT("MoveInterface not found in AIController!"));
-
     // 行为决策逻辑
     if (bIsDead)
     {
-        // 如果敌人死亡，停止所有行为
         EnemyCharacter->MoveInterface->Stop();
-		UE_LOG(LogTemp, Warning, TEXT("Enemy is dead!"));
-        return;
     }
     else if (bIsBeingAttacked)
     {
-        // 如果敌人被攻击，反击或逃跑
-        if (EnemyCharacter->HealthInterface->GetCurrentHealth() > EnemyCharacter->HealthInterface->GetMaxHealth() / 10.0f
-            && EnemyCharacter->AttackInterface->CanAttack())
+        if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking back!"));
+        }
+        else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
+        {
+            EnemyCharacter->AttackInterface->NormalRemoteAttack();
         }
         else
         {
-            EnemyCharacter->MoveInterface->MoveTo(EnemyCharacter->MoveInterface->GetSpawnLocation(), 100);
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is running away!"));
+            EnemyCharacter->MoveInterface->ChasePlayer();
         }
     }
     else if (bCanDetectPlayer)
@@ -107,14 +108,20 @@ void AEnemyAIController::Tick(float DeltaTime)
         if (EnemyCharacter->AttackInterface->CanAttack())
         {
             EnemyCharacter->AttackInterface->NormalAttack();
+			UE_LOG(LogTemp, Warning, TEXT("AI:Enemy is attacking!"));
         }
-        else if (EnemyCharacter->AttackInterface->IsInRange())
+        else if (EnemyCharacter->AttackInterface->CanRemoteAttack())
+        {
+			EnemyCharacter->AttackInterface->NormalRemoteAttack();
+        }
+        else if (EnemyCharacter->AttackInterface->IsInRange() || EnemyCharacter->AttackInterface->IsInRemoteRange())
         {
             EnemyCharacter->MoveInterface->Stop();
         }
         else
         {
             EnemyCharacter->MoveInterface->ChasePlayer();
+            UE_LOG(LogTemp, Warning, TEXT("AI:Enemy is chasing!"));
         }
     }
 	else if (EnemyCharacter->DetectInterface->GetLastPerceptionLocation() != FVector::ZeroVector 

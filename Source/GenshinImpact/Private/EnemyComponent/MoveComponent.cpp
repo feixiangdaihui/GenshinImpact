@@ -38,6 +38,7 @@ void UMoveComponent::BeginPlay()
         SpawnLocation = Owner->GetActorLocation();
 		EnemyMovement = Cast<ACharacter>(GetOwner())->GetCharacterMovement();
     }
+	UE_LOG(LogTemp, Warning, TEXT("run speed:%f"), RunSpeed);
 }
 
 void UMoveComponent::MoveTo(const FVector& Location, float AcceptRadius)
@@ -114,6 +115,7 @@ void UMoveComponent::Patrol()
             bIsResting = true;
             bIsIdling = false;
             CurrentSpeed = 0.0f;
+            EnemyMovement->MaxWalkSpeed = CurrentSpeed;
 
             UE_LOG(LogTemp, Warning, TEXT("Resting..."));
 
@@ -177,7 +179,6 @@ void UMoveComponent::Patrol()
     }
 }
 
-
 void UMoveComponent::ChasePlayer()
 {
     if (AActor* Owner = GetOwner())
@@ -198,6 +199,7 @@ void UMoveComponent::ChasePlayer()
 			bIsResting = false;
 			bIsIdling = false;
 			CurrentSpeed = RunSpeed;
+            UE_LOG(LogTemp, Warning, TEXT("Chasing player at: %f"), CurrentSpeed);
 			MoveTo(PlayerLocation, 100, CurrentSpeed);
 
             //UE_LOG(LogTemp, Warning, TEXT("Chasing player at location: %s"), *PlayerLocation.ToString());

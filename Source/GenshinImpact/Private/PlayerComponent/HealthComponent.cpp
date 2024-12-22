@@ -58,6 +58,16 @@ void UHealthComponent::RecoverHealthByValue(float RecoverValue)
 	}
 }
 
+void UHealthComponent::RecoverHealthByRate(float DamageRate)
+{
+	CurrentHealth += MaxHealth * DamageRate;
+	RemainHealthRate = CurrentHealth / MaxHealth;
+	if (CurrentHealth >= MaxHealth)
+	{
+		CurrentHealth = MaxHealth;
+		RemainHealthRate = 1.0f;
+	}
+}
 
 
 // Called when the game starts
