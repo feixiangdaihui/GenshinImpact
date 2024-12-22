@@ -14,6 +14,7 @@ void ASumPlayerController::BeginPlay()
 	InitializeCharacterMessageAtBeginPlay();
 	LoadCharacterData();
 
+	// InventoryComponent = CreateDefaultSubobject<UCPP_InventoryComponent>(TEXT("InventoryComponent"));
 
 	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
 	if (PlayerCharacter)
@@ -167,17 +168,7 @@ void ASumPlayerController::ToggleInventory()
 {
 	if (InventoryComponent)
 	{
-		// 使用反射调用蓝图函数
-		FName FunctionName = FName("ToggleInventoryWidget");
-		UFunction* Function = InventoryComponent->FindFunction(FunctionName);
-		if (Function)
-		{
-			InventoryComponent->ProcessEvent(Function, nullptr);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Function %s not found in InventoryComponent."), *FunctionName.ToString());
-		}
+		InventoryComponent->CPP_ToggleInventoryWidget();
 	}
 }
 

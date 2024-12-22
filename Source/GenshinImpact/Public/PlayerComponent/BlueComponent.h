@@ -31,18 +31,25 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void RecoverBlueByTick();
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void AddBlue(float BlueValue);
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void AddBlueByRate(float Rate);
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	bool ReduceBlue(float BlueValue);
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	float GetCurrentBlue() { return CurrentBlue; }
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	float GetMaxBlue() { return MaxBlue; }
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void SetMaxBlue(float NewMaxBlue) { MaxBlue = NewMaxBlue; }
+
 	UFUNCTION(BlueprintCallable, Category = "Blue")
 	void RecoverBlueByValue(float BlueValue);
 	void InitializeBlueComponent(float InitBlue) { CurrentBlue = InitBlue; }
