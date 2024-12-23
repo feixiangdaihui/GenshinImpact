@@ -33,6 +33,7 @@ void ASumPlayerController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PlayerPawn is not a valid ACharacter."));
 	}
+
 }
 
 
@@ -169,11 +170,39 @@ void ASumPlayerController::SetupInputComponent()
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		// 绑定 ToggleInventoryAction 到 ToggleInventoryWidget
 		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Triggered, this, &ASumPlayerController::ToggleInventory);
 	}
 }
 
+void ASumPlayerController::ToggleGachaUI()
+{
+	if (GachaWidgetInstance == nullptr)
+	{
+		return;
+	}
+
+	if (!bIsGachaUIVisible)
+	{
+		GachaWidgetInstance->AddToViewport();
+		
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(GachaWidgetInstance->TakeWidget());
+		SetInputMode(InputMode);
+		
+		bShowMouseCursor = true;
+		bIsGachaUIVisible = true;
+	}
+	else
+	{
+		GachaWidgetInstance->RemoveFromViewport();
+		
+		FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
+		bShowMouseCursor = false;
+		
+		bIsGachaUIVisible = false;
+	}
+}
 
 void ASumPlayerController::ToggleInventory()
 {
@@ -209,7 +238,6 @@ void ASumPlayerController::GameOver()
 {
 	//退出游戏
 	SaveCharacterData();
-	// 退出游戏
 	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }
 
