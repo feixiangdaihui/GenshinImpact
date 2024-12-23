@@ -7,7 +7,6 @@
 #include "EnhancedInputComponent.h" 
 #include "EnhancedInputSubsystems.h" 
 #include "InputActionValue.h"
-#include "Inventory/CPP_InventoryComponent.h"
 #include "GachaSystem/GachaWidget.h"
 #include "SumPlayerController.generated.h"
 #define CHARACTERNUM 3
@@ -53,20 +52,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetCurrentCharacterIndex() { return CurrentCharacterIndex; }
 
-	virtual void SetupInputComponent() override;
-
-	void ToggleInventory();
-
 private:
-	// MappingContext 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* InventoryMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* ToggleInventoryAction;  
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UCPP_InventoryComponent* InventoryComponent;
  
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UGachaWidget> GachaWidgetClass;

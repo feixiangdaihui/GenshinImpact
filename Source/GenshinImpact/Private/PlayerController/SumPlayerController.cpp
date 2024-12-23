@@ -15,25 +15,10 @@ void ASumPlayerController::BeginPlay()
 
 	InitializeCharacterMessageAtBeginPlay();
 
-
+	/*
 	ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn());
-	if (PlayerCharacter)
-	{
-		UCPP_InventoryComponent* FoundInventoryComponent = PlayerCharacter->FindComponentByClass<UCPP_InventoryComponent>();
-		if (FoundInventoryComponent)
-		{
-			InventoryComponent = FoundInventoryComponent;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("InventoryComponent not found on PlayerCharacter."));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerPawn is not a valid ACharacter."));
-	}
-
+	*/
+	
 }
 
 
@@ -48,8 +33,6 @@ void ASumPlayerController::Tick(float DeltaTime)
 			Characters[Index]->SetActorLocationAndRotation(CurrentCharacterLocation, CurrentCharacterRotation);
 
 	}
-		
-	
 }
 
 void ASumPlayerController::InitializeCharacterMessageAtBeginPlay()
@@ -164,16 +147,6 @@ void ASumPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	SaveCharacterData();
 }
 
-void ASumPlayerController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Triggered, this, &ASumPlayerController::ToggleInventory);
-	}
-}
-
 void ASumPlayerController::ToggleGachaUI()
 {
 	if (GachaWidgetInstance == nullptr)
@@ -201,24 +174,6 @@ void ASumPlayerController::ToggleGachaUI()
 		bShowMouseCursor = false;
 		
 		bIsGachaUIVisible = false;
-	}
-}
-
-void ASumPlayerController::ToggleInventory()
-{
-	if (InventoryComponent)
-	{
-		// 使用反射调用蓝图函数
-		FName FunctionName = FName("ToggleInventoryWidget");
-		UFunction* Function = InventoryComponent->FindFunction(FunctionName);
-		if (Function)
-		{
-			InventoryComponent->ProcessEvent(Function, nullptr);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Function %s not found in InventoryComponent."), *FunctionName.ToString());
-		}
 	}
 }
 

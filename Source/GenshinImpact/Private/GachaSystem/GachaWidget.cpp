@@ -15,12 +15,6 @@ void UGachaWidget::NativeConstruct()
     {
         GachaButton->OnClicked.AddDynamic(this, &UGachaWidget::OnGachaButtonClicked);
     }
-
-    // 初始化结果文本
-    if (ResultText)
-    {
-        ResultText->SetText(FText::FromString(TEXT("等待抽卡结果...")));
-    }
 }
 
 void UGachaWidget::OnGachaButtonClicked()
